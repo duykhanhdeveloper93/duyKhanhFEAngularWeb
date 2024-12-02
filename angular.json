@@ -99,6 +99,9 @@
                             "buildTarget": "daxa:build:local"
                         }
                     },
+                    "options": {
+                        "port": 9000
+                    },
                     "defaultConfiguration": "development"
                 },
                 "extract-i18n": {
