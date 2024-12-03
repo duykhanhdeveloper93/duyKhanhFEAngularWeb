@@ -43,7 +43,9 @@ export class SignInComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-        
+        if (this.tokenStorage.getAccessToken()) {
+            this.router.navigate(['/dashboard']);
+        } 
     }
 
     // Password Hide

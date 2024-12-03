@@ -3,8 +3,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Component, HostListener } from '@angular/core';
 import { ToggleService } from '../sidebar/toggle.service';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { AuthService } from '../../_service/auth.service';
+import { TokenStorageService } from '../../_service/token-storage.service';
 
 @Component({
     selector: 'app-header',
@@ -23,7 +25,10 @@ export class HeaderComponent {
 
     constructor(
         private toggleService: ToggleService,
-        public themeService: CustomizerSettingsService
+        public themeService: CustomizerSettingsService,
+        private authService: AuthService,
+        private tokenStorage: TokenStorageService,
+        private router: Router,
     ) {
         this.toggleService.isSidebarToggled$.subscribe(isSidebarToggled => {
             this.isSidebarToggled = isSidebarToggled;
@@ -53,6 +58,26 @@ export class HeaderComponent {
     // Dark Mode
     toggleTheme() {
         this.themeService.toggleTheme();
+    }
+
+    async logOut() {
+        this.authService.logOut().subscribe({
+            next: async (res) => {
+                if (res.statusCode == 200) {
+                    this.tokenStorage.signOut();
+                    location.reload();
+                   
+                    const returnUrl = '/authentication/login';
+                    this.router.navigate([returnUrl]);
+                }
+                
+            },
+            error: (err) => {
+                console.log(err);
+                this.router.navigate(['/authentication/login']);
+                this.tokenStorage.signOut();
+            },
+        });
     }
 
 }
