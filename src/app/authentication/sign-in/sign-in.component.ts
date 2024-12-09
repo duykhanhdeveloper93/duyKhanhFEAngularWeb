@@ -44,7 +44,7 @@ export class SignInComponent implements OnInit {
     }
     ngOnInit(): void {
         if (this.tokenStorage.getAccessToken()) {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/to-do-list']);
         } 
     }
 
@@ -70,7 +70,7 @@ export class SignInComponent implements OnInit {
                         );
                         console.log(res.data);
                         this.activatedRoute.queryParams.subscribe(async () => {
-                            const returnUrl = '/dashboard';
+                            const returnUrl = '/to-do-list';
                             this.router.navigate([returnUrl]);
                             
                         });

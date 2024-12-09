@@ -67,14 +67,14 @@ export class HeaderComponent {
                     this.tokenStorage.signOut();
                     location.reload();
                    
-                    const returnUrl = '/authentication/login';
+                    const returnUrl = '/authentication';
                     this.router.navigate([returnUrl]);
                 }
                 
             },
             error: (err) => {
                 console.log(err);
-                this.router.navigate(['/authentication/login']);
+                this.router.navigate(['/authentication']);
                 this.tokenStorage.signOut();
             },
         });
