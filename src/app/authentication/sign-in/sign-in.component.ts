@@ -66,7 +66,7 @@ export class SignInComponent implements OnInit {
                     if (res.statusCode == 200) {
                         this.tokenStorage.setCookies(res.data);
                         this.tokenStorage.setKeepLoginSessionStatus(
-                            this.authForm.value.keepLoginSession
+                            true
                         );
                         console.log(res.data);
                         this.activatedRoute.queryParams.subscribe(async () => {
