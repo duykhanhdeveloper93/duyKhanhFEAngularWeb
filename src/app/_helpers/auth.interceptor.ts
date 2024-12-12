@@ -115,10 +115,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     if (this.tokenStorageService.getKeepLoginSessionStatus()) {
                         return this.handleRefreshToken(req, next);
                     } else {
-                        if (!this.isOnlineChat()) {
-                            this.tokenStorageService.signOut();
-                            this.router.navigate(['/authentication/login']);
-                        }
+                        
                     }
                 }
                 if (
@@ -126,10 +123,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     error.status === 401 &&
                     error.error.message == ResponseCodeEnum.REQUIRE_SIGN_IN
                 ) {
-                    if (!this.isOnlineChat()) {
-                        this.tokenStorageService.signOut();
-                        this.router.navigate(['/authentication/login']);
-                    }
+                    
                     return throwError(() => error);
                 }
                 return throwError(() => error);
@@ -137,9 +131,7 @@ export class AuthInterceptor implements HttpInterceptor {
         );
     }
 
-    isOnlineChat() {
-        return this.router.url.startsWith('/online/');
-    }
+    
 }
 
 export const authInterceptorProviders = [

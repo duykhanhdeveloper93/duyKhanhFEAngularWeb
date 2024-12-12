@@ -65,7 +65,7 @@ export class HeaderComponent {
             next: async (res) => {
                 if (res.statusCode == 200) {
                     this.tokenStorage.signOut();
-                    location.reload();
+                    //location.reload();
                    
                     const returnUrl = '/authentication';
                     this.router.navigate([returnUrl]);
