@@ -30,6 +30,7 @@
                     <span class="sub-title text-body">
                         MAIN
                     </span>
+                    
                     <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = true">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -37,39 +38,25 @@
                                     dashboard
                                 </i>
                                 <span class="title">
-                                    Dashboard
+                                    Cài đặt
                                 </span>
                                 <span class="daxa-badge">
-                                    5
+                                    2
                                 </span>
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
                             <li class="sidemenu-item">
-                                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    E-Commerce
+                                <a routerLink="/settings/manage-user" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Quản lý người dùng
                                 </a>
                             </li>
                             <li class="sidemenu-item">
                                 <a routerLink="/crm" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    CRM
+                                    Quản lý phân quyền
                                 </a>
                             </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/project-management" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    Project Management
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/lms" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    LMS
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/help-desk" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    Help Desk <span class="daxa-badge">Hot</span>
-                                </a>
-                            </li>
+                           
                         </ul>
                     </mat-expansion-panel>
                     

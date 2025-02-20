@@ -23,33 +23,8 @@
     [class.rtl-enabled]="themeService.isRTLEnabled()"
 >
     <mat-card-content>
-        <ul class="pl-0 mt-0 list-unstyled">
-            <li class="d-inline-block">
-                <a routerLink="/settings" mat-button routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    Account Settings
-                </a>
-            </li>
-            <li class="d-inline-block">
-                <a routerLink="/settings/change-password" mat-button routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    Change Password
-                </a>
-            </li>
-            <li class="d-inline-block">
-                <a routerLink="/settings/connections" mat-button routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    Connections
-                </a>
-            </li>
-            <li class="d-inline-block">
-                <a routerLink="/settings/privacy-policy" mat-button routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    Privacy Policy
-                </a>
-            </li>
-            <li class="d-inline-block">
-                <a routerLink="/settings/terms-conditions" mat-button routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    Terms & Conditions
-                </a>
-            </li>
-        </ul>
+        
+        
         <router-outlet />
     </mat-card-content>
 </mat-card>

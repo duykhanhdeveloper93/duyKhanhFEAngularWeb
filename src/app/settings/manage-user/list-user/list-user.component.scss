@@ -1,0 +1,80 @@
+.user-list-container {
+    padding: 20px;
+  
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+  
+      h2 {
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+  
+    .error-message {
+      color: #f44336;
+      padding: 16px;
+      text-align: center;
+      background-color: #ffebee;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+  
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+  
+    .no-data {
+      text-align: center;
+      padding: 20px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+  
+    table {
+      width: 100%;
+      
+      th.mat-header-cell {
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.87);
+      }
+  
+      .mat-column-actions {
+        width: 80px;
+        text-align: center;
+      }
+    }
+  
+    .mat-card {
+      margin-bottom: 20px;
+    }
+  
+    .mat-paginator {
+      margin-top: 20px;
+    }
+  
+    .mat-chip-list {
+      display: inline-block;
+    }
+  
+    .mat-chip {
+      min-height: 24px;
+      padding: 4px 8px;
+    }
+  }
+  
+  // Responsive styles
+  @media screen and (max-width: 768px) {
+    .user-list-container {
+      padding: 10px;
+  
+      .mat-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  }
+  
