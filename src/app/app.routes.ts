@@ -195,6 +195,8 @@ import { EProductsGridComponent } from './pages/ecommerce-page/e-products-grid/e
 import { EcommercePageComponent } from './pages/ecommerce-page/ecommerce-page.component';
 import { TeamMembersComponent } from './pages/users-page/team-members/team-members.component';
 import { ListUserComponent } from './settings/manage-user/list-user/list-user.component';
+import { ListRoleComponent } from './settings/manage-role/list-role/list-role.component';
+import { CreateUserComponent } from './settings/manage-user/create_user/create-user.component';
 
 export const routes: Routes = [
 
@@ -219,8 +221,8 @@ export const routes: Routes = [
             {path: '', component: AccountSettingsComponent},
             {path: 'change-password', component: ChangePasswordComponent},
             {path: 'connections', component: ConnectionsComponent},
-            {path: 'privacy-policy', component: PrivacyPolicyComponent},
-            {path: 'terms-conditions', component: TermsConditionsComponent},
+            {path: 'manage-user/add', component: CreateUserComponent},
+            {path: 'manage-role', component: ListRoleComponent},
             {path: 'manage-user', component: ListUserComponent}
         ]
     },

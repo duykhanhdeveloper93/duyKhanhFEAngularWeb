@@ -1,0 +1,18 @@
+<div class="v-customize-input" [ngClass]="getDisplayType()">
+    <label *ngIf="label" class="d-block fw-semibold gray-color lbl"
+        >{{ label }}
+        <span  class="ml-5 text-red">*</span></label
+    >
+    <mat-form-field
+        class="ipt mb-5"
+        [ngClass]="{ 'disabled-input': disabled }"
+    >
+    <input 
+        [readonly]="disabled"
+        [disabled]="disabled"
+        matInput
+        [type]="inputType"
+        [value]="valueText"/>
+
+    </mat-form-field>
+</div>

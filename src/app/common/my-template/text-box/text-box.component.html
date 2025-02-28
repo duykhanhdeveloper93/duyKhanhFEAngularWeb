@@ -1,0 +1,30 @@
+<div class="v-customize-input" [ngClass]="getDisplayType()">
+    <label *ngIf="label" class="d-block fw-semibold gray-color lbl"
+        >{{ label }}
+        <span *ngIf="required" class="ml-5 text-red">*</span></label
+    >
+    <mat-form-field
+        class="ipt mb-5"
+        [ngClass]="{ 'disabled-input': disabled }"
+    >
+        <input
+            matInput
+            vTrimInput
+            [type]="inputType"
+            [readonly]="disabled"
+            [formControl]="control"
+            [placeholder]="placeholder ? placeholder : label"
+            [required]="required"
+            autocomplete="one-time-code"
+            [min]="min"
+            [max]="max"
+            (blur)="markAsTouch()"
+            (input)="markAsTouch()"
+            [value]="ngModelValue"
+            (keyup.enter)="onEnterEvent()"
+        />
+        <mat-hint *ngIf="(control && control.errors) || (hasHint && message) || (hasError && message)" [ngClass]="{'danger-message': !hasHint, 'text-hint': hasHint}"
+            >{{ message }}
+        </mat-hint>
+    </mat-form-field>
+</div>

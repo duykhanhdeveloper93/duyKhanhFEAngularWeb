@@ -1,0 +1,27 @@
+<div class="customize-select">
+    <mat-form-field style="width: 100%">
+        <mat-chip-grid #chipGrid aria-label="Fruit selection">
+            <mat-chip-row *ngFor="let item of items;let i = index" (removed)="remove(i)" style="margin-top: -5px;">
+                {{item?.title}}
+                <button matChipRemove style="background: none;">
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip-row>
+        </mat-chip-grid>
+        <input [matChipInputFor]="chipGrid" matInput (click)="onClick($event)" (keyup)="onKeyupChange($event)"
+            autocomplete="off" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <div class="dropdown" [class.visible]="focus">
+        <ul>
+            <ng-container *ngFor="let option of _options;let i = index">
+                <li [class.active]="zindexs.includes(i)" (click)="selectItem(i)">
+                    <div class="option">
+                        {{option.title}}
+                    </div>
+                </li>
+            </ng-container>
+
+        </ul>
+    </div>
+</div>

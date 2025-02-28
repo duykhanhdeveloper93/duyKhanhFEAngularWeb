@@ -1,0 +1,123 @@
+.w100 {
+    width: 100%;
+}
+
+.txt-left {
+    .mat-sort-header-container {
+        justify-content: start !important;
+    }
+}
+
+.txt-center {
+    .mat-sort-header-container {
+        justify-content: center !important;
+    }
+}
+
+#checkboxMother {
+    display: flex;
+    align-items: center;
+}
+#checkboxChildren {
+    display: flex;
+    align-items: center;
+}
+
+#button_checkbox {
+    position: absolute;
+    padding-left: 0px !important; /* Đẩy nút về bên phải */
+    padding-right: 0px !important; /* Đẩy nút về bên phải */
+    margin-left: 15px !important; /* Đẩy nút về bên phải */
+    margin-top: 5px !important; /* Đẩy nút về bên phải */
+    margin-right: 0px !important; /* Đẩy nút về bên phải */
+}
+
+.alert-danger {
+    margin: -15px 0px 10px 0px;
+}
+
+.td-box-select {
+    text-align: center !important;
+    width: 120px;
+}
+.txt-textarea {
+    .mat-mdc-text-field-wrapper {
+        border: 1px solid #b1b5c3 !important;
+        border-radius: 10px !important;
+    }
+}
+
+.cskh-search-box {
+    width: 500px;
+
+    .input-search {
+        background-color: #f5f7fa;
+        padding: 0 20px 2px 20px;
+        color: var(--blackColor);
+        outline: 0 !important;
+        border-radius: 30px !important;
+        height: 45px;
+        width: 100%;
+        border: 0;
+
+        &::placeholder {
+            color: #a9a9c8;
+            transition: var(--transition);
+        }
+        &:focus {
+            &::placeholder {
+                color: transparent;
+            }
+        }
+    }
+    button {
+        top: 50%;
+        padding: 0;
+        right: 20px;
+        border: none;
+        line-height: 1;
+        cursor: pointer;
+        position: absolute;
+        font-size: 22px !important;
+        transform: translateY(-50%);
+        color: var(--heraBlueColor);
+        background-color: transparent;
+        transition: var(--transition);
+
+        &:hover {
+            color: var(--blackColor);
+        }
+    }
+}
+
+.bottom-btns {
+    display: flex;
+    padding: 25px;
+    flex-direction: row-reverse;
+}
+
+.rankingContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-radius: 8px;
+    border: solid 1px;
+    border-color: #B1B5C3 ;
+  }
+  
+  .rankingAction {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 6px;
+   
+  }
+  
+  .buttonArrowContainer {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+    cursor: pointer;
+  }
+  

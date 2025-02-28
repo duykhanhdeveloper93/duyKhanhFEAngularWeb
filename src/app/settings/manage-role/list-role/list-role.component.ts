@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { UserService } from '../../../_service/user.service';
+import { RouterLink } from '@angular/router';
+
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
@@ -10,8 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RoleService } from '../../../_service/role.service';
 
-interface User {
+interface Role {
   id: number;
   username: string;
   email: string;
@@ -21,7 +22,7 @@ interface User {
 }
 
 interface PaginatedResponse {
-  items: User[];
+  items: Role[];
   meta: {
     page: number;
     limit: number;
@@ -32,7 +33,7 @@ interface PaginatedResponse {
 }
 
 @Component({
-  selector: 'app-list-user',
+  selector: 'app-list-role',
   standalone: true,
   imports: [
     CommonModule,
@@ -46,23 +47,20 @@ interface PaginatedResponse {
     MatChipsModule,
     MatProgressSpinnerModule
   ],
-  templateUrl: './list-user.component.html',
-  styleUrl: './list-user.component.scss'
+  templateUrl: './list-role.component.html',
+  styleUrl: './list-role.component.scss'
 })
-export class ListUserComponent {
-  private userService = inject(UserService);
+export class ListRoleComponent {
+  private roleService = inject(RoleService);
   
-  users = signal<User[]>([]);
+  roles = signal<Role[]>([]);
   totalItems = signal<number>(0);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
   
   displayedColumns: string[] = [
     'id', 
-    'username', 
-    'email', 
-    'fullName', 
-    'status', 
+    'name', 
     'createdAt', 
     'actions'
   ];
@@ -72,20 +70,17 @@ export class ListUserComponent {
   pageSizeOptions = signal<number[]>([10, 20, 50, 100]);
   currentPage = signal<number>(0);
 
-  constructor(
-    private router: Router
-  ) {
-    
-    this.loadUsers();
+  constructor() {
+    this.loadRoles();
   }
 
-  loadUsers(page: number = 1, limit: number = this.pageSize()): void {
+  loadRoles(page: number = 1, limit: number = this.pageSize()): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.userService.getUsers({ page, limit }).subscribe({
+    this.roleService.getRoles({ page, limit }).subscribe({
       next: (response: PaginatedResponse) => {
-        this.users.set(response.items);
+        this.roles.set(response.items);
         this.totalItems.set(response.meta.total);
        
         this.loading.set(false);
@@ -101,17 +96,13 @@ export class ListUserComponent {
   onPageChange(event: PageEvent): void {
     this.currentPage.set(event.pageIndex);
     this.pageSize.set(event.pageSize);
-    this.loadUsers(this.currentPage() + 1, this.pageSize());
+    this.loadRoles(this.currentPage() + 1, this.pageSize());
   }
 
-  deleteUser(userId: number): void {
+  deleteRole(userId: number): void {
     if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
       // Implement delete logic here
-      console.log('Deleting user:', userId);
+      console.log('Deleting role:', userId);
     }
   }
-
-  addNewPackage() {
-    this.router.navigate(['/settings/manage-user/add']);
-}
 }
