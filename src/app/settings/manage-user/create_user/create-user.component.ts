@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { UserFormComponent } from '../form-user/user-form.component';
 import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
 import { CommonModule } from '@angular/common';
@@ -26,7 +25,6 @@ export class CreateUserComponent implements OnInit {
   submitted = false;
 
   constructor(
-    private toastr: ToastrService,
     private router: Router,
   ) { }
 

@@ -15,7 +15,6 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 
 
 import {
@@ -105,7 +104,6 @@ export class UserFormComponent implements AfterViewInit, OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private toastr: ToastrService,
         private router: Router,
         private _liveAnnouncer: LiveAnnouncer,
         private route: ActivatedRoute,
