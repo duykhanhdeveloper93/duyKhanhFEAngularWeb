@@ -2,15 +2,35 @@
     <mat-card class="mb-15 tagus-card">
         <mat-card-content>
             <div class="row">
+                <div class="col-lg-6">
+                    <v-text-box 
+                        label="Tên"
+                        [control]="elementFormControl('firstName')"
+                        [required]="true"
+                        [message] = "errorMessage.firstName"
+                        (touched)="onTouch('firstName')"
+                    ></v-text-box>
                 
-                    <v-text-only  label="Phòng ban" 
-                        [valueText]="'1'">
-                    </v-text-only>
-                
-            </div>
-        </mat-card-content>
+                </div>
 
+                <div class="col-lg-6">
+                    <v-text-box 
+                        label="Tên"
+                        [control]="elementFormControl('firstName')"
+                        [required]="true"
+                        [message] = "errorMessage.firstName"
+                        (touched)="onTouch('firstName')"
+                    ></v-text-box>
+                
+                </div>
+        </div>
+        </mat-card-content>
+        <mat-form-field class="mb-25">
+            <mat-label>Favorite food</mat-label>
+            <input matInput placeholder="Ex. Pizza" placeholder="Sushi">
+        </mat-form-field>
        
         
     </mat-card>
+    
 </form>

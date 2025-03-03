@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
     Component,
     Input,
@@ -13,13 +14,21 @@ import {
     ControlValueAccessor,
     NG_VALUE_ACCESSOR,
     FormControl,
+    ReactiveFormsModule,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/custom-errorstatematcher/custom-errorstatematcher.component';
 
 @Component({
     selector: 'v-text-box',
     templateUrl: './text-box.component.html',
     styleUrls: ['./text-box.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: true, // Thêm dòng này để khai báo là standalone component
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -27,6 +36,18 @@ import {
             multi: true,
         },
     ],
+        imports: [
+            MatCardModule,
+            CommonModule,
+            ReactiveFormsModule,
+            MatFormFieldModule, 
+            MatInputModule, 
+            MatIconModule, 
+            MatButtonModule, 
+            CustomErrorstatematcherComponent,
+            MatCardModule,
+
+            ]
 })
 export class VTextBoxComponent implements ControlValueAccessor, OnChanges {
     value: any;

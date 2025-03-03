@@ -39,6 +39,17 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { VTextOnlyComponent } from '../../../common/my-template/v-text-only/v-text-only.component';
 
+import {
+    getErrorMessageForControl,
+    getFormControlErrorMessages,
+} from '../../../_helpers/helpers';
+import { VTextBoxComponent } from '../../../common/my-template/text-box/text-box.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/custom-errorstatematcher/custom-errorstatematcher.component';
+
 
 @Component({
     selector: 'user-form',
@@ -47,10 +58,16 @@ import { VTextOnlyComponent } from '../../../common/my-template/v-text-only/v-te
     standalone: true, // Thêm dòng này để khai báo là standalone component
     imports: [
         MatCardModule,
+        MatFormFieldModule, 
+        MatInputModule, 
+        MatIconModule, 
+        MatButtonModule, 
+        CustomErrorstatematcherComponent,
         CommonModule,
         ReactiveFormsModule,
         MatCardModule,
-        VTextOnlyComponent
+        VTextOnlyComponent,
+        VTextBoxComponent // Thêm dòng này
         ]
     // encapsulation: ViewEncapsulation.None,
 })
@@ -83,7 +100,10 @@ export class UserFormComponent implements AfterViewInit, OnInit {
     dataReturn: any;
     selectedNumber = 1;
 
-    errorMessages: any = {};
+    errorMessage: any = {
+        firstName: ''
+       
+    };
 
     selectedFeatures: any[]
 
@@ -98,7 +118,7 @@ export class UserFormComponent implements AfterViewInit, OnInit {
    
     formInit() {
         this.myForm = this.formBuilder.group({
-            name: ['', [Validators.required, Validators.maxLength(255)]]
+            firstName: ['', [Validators.required, Validators.maxLength(255)]]
         });
     }
 
@@ -113,6 +133,14 @@ export class UserFormComponent implements AfterViewInit, OnInit {
     ) {
        
         this.formInit();
+    }
+
+    onTouch(name: any) {
+        const f = this.elementFormControl(name);
+
+        if ((f.touched || f.dirty) && f.errors) {
+            this.errorMessage[name] = getErrorMessageForControl(f);
+        }
     }
 
     

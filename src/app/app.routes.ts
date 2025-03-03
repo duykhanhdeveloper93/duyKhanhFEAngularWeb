@@ -226,6 +226,7 @@ export const routes: Routes = [
             {path: 'manage-user', component: ListUserComponent}
         ]
     },
+    
     // Here add new pages component
 
     {path: '**', component: NotFoundComponent} // This line will remain down from the whole pages component list
