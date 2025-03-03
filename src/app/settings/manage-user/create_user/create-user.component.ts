@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserFormComponent } from '../form-user/user-form.component';
-import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
-import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'create-user',
@@ -11,6 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./create-user.component.scss'],
   standalone: true,
   imports: [
+          MatCardModule,
     UserFormComponent]
     
 })

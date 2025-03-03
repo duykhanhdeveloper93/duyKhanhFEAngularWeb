@@ -14,7 +14,7 @@ import {
     AbstractControl,
     ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 
 import {
@@ -49,6 +49,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/custom-errorstatematcher/custom-errorstatematcher.component';
+import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
 
 
 @Component({
@@ -67,6 +68,7 @@ import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/cus
         ReactiveFormsModule,
         MatCardModule,
         VTextOnlyComponent,
+        RouterLink,
         VTextBoxComponent // Thêm dòng này
         ]
     // encapsulation: ViewEncapsulation.None,
@@ -129,7 +131,8 @@ export class UserFormComponent implements AfterViewInit, OnInit {
         private route: ActivatedRoute,
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
-        private paginatorIntl: MatPaginatorIntl
+        private paginatorIntl: MatPaginatorIntl,
+        public themeService: CustomizerSettingsService
     ) {
        
         this.formInit();
@@ -150,7 +153,7 @@ export class UserFormComponent implements AfterViewInit, OnInit {
        
     }
 
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+
 
     ngAfterViewInit() {
         

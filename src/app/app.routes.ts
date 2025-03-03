@@ -214,6 +214,7 @@ export const routes: Routes = [
         ]
     },
     {path: 'my-profile', component: MyProfileComponent},
+    {path: 'to-do-list', component: ToDoListComponent},
     {
         path: 'settings',
         component: SettingsComponent,
