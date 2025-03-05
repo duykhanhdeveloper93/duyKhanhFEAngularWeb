@@ -26,6 +26,9 @@ export class AuthService {
     logOut(): Observable<any> {
         return this.http.post(AUTH_API + 'sign-out', {}, httpOptions);
     }
-
+    
+    refreshToken(): Observable<any> {
+        return this.http.post(AUTH_API + 'refresh', {}, httpOptions);
+    }
 
 }

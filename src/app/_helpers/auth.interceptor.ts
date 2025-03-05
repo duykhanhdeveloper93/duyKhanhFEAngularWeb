@@ -77,9 +77,11 @@ export class AuthInterceptor implements HttpInterceptor {
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
+        console.log("zzzzzzzzzzzz")
         const access_token = this.tokenStorageService.getAccessToken();
         const client_id = this.tokenStorageService.getClientId();
         const refresh_token = this.tokenStorageService.getRefreshToken();
+        console.log("zzzzzzzzzzzz")
         const guest_access_token =
             this.tokenStorageService.getGuestAccessToken();
         const guest = this.tokenStorageService.getGuest();
