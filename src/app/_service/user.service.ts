@@ -11,6 +11,22 @@ const httpOptions = {
     withCredentials: true,
 };
 
+export class CreateUserDto {
+    username: string;
+    firstName:string;
+    lastName: string;
+    address: string;
+    status: boolean;
+    password?: string;
+    isSys?: boolean;
+    passwordHash?: string;
+    passwordHashTemp?: string;
+    roleIds?: number[];
+    createdAt?: Date;
+    createdBy?: number;
+  }
+
+
 @Injectable({
     providedIn: 'root',
 })
@@ -25,6 +41,10 @@ export class UserService {
 
     deleteUser(id: number): Observable<void> {
         return this.http.delete<void>(`${AUTH_API}/${id}`);
+    }
+
+    createUser(body: CreateUserDto): Observable<any> {
+        return this.http.post(AUTH_API + 'createUser', body, httpOptions);
     }
 
 }

@@ -14,7 +14,7 @@ import {
     AbstractControl,
     ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 
 import {
@@ -38,7 +38,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { VTextOnlyComponent } from '../../../common/my-template/v-text-only/v-text-only.component';
-
+import { ToastrService } from 'ngx-toastr';
 import {
     getErrorMessageForControl,
     getFormControlErrorMessages,
@@ -50,6 +50,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/custom-errorstatematcher/custom-errorstatematcher.component';
 import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
+import { VButtonComponent } from '../../../common/my-template/v-button/button.component';
+import { UserService } from '../../../_service/user.service';
 
 
 @Component({
@@ -69,7 +71,9 @@ import { CustomizerSettingsService } from '../../../customizer-settings/customiz
         MatCardModule,
         VTextOnlyComponent,
         RouterLink,
-        VTextBoxComponent // Thêm dòng này
+        VTextBoxComponent,
+        RouterLink, RouterOutlet, MatCardModule, MatButtonModule, RouterLinkActive,
+        VButtonComponent
         ]
     // encapsulation: ViewEncapsulation.None,
 })
@@ -120,19 +124,37 @@ export class UserFormComponent implements AfterViewInit, OnInit {
    
     formInit() {
         this.myForm = this.formBuilder.group({
-            firstName: ['', [Validators.required, Validators.maxLength(255)]]
+            username: ['', 
+                [
+                    Validators.required,
+                    Validators.maxLength(11),
+                    Validators.minLength(10),
+                    Validators.pattern(regexs.usernameRegex)],
+                ],
+            password: ['', 
+                        [Validators.required,
+                        Validators.pattern(regexs.regex_password)],
+                        ],
+            firstName: ['', 
+                        [Validators.required, 
+                        Validators.maxLength(255)]],
+            lastName: ['', 
+                        [Validators.required, 
+                        Validators.maxLength(255)]]
         });
     }
 
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
+        private userService: UserService,
         private _liveAnnouncer: LiveAnnouncer,
         private route: ActivatedRoute,
         public dialog: MatDialog,
+        private toastr: ToastrService,
         private spinnerService: NgxSpinnerService,
         private paginatorIntl: MatPaginatorIntl,
-        public themeService: CustomizerSettingsService
+        public themeService: CustomizerSettingsService,
     ) {
        
         this.formInit();
@@ -172,7 +194,79 @@ export class UserFormComponent implements AfterViewInit, OnInit {
     }
 
     addUser(myForm: FormGroup) {
+        if (myForm.invalid) {
+            this.getErrorForm();
+            return;
+        }
+        const bodyData = this.myForm.value;
+        bodyData.status = true;
 
+        this.userService.createUser(bodyData).subscribe({
+            next: async (res) => {
+                if (res.data.status === true) {
+                   
+                    this.spinnerService.hide();
+                    this.toastr.success("Tạo người dùng thành công", TOASTR_TITLE.SUCCESS);
+                } else {
+                    this.toastr.error(res.data.message, TOASTR_TITLE.ERROR);
+                    this.spinnerService.hide();
+                }
+            },
+            error: (err) => {
+                this.toastr.error(
+                    ` Lỗi`,
+                    'Thông báo lỗi'
+                );
+            }
+        })
+       
+    }
+
+    getErrorForm() {
+        if (this.myForm.invalid) {
+            let textRequired: string = '';
+            let textMaxLength: string = '';
+            Object.keys(this.myForm.controls).forEach((controlName) => {
+                const control = this.myForm.get(controlName);
+
+                if (control!.invalid && control!.errors !== null) {
+                    Object.keys(control!.errors).forEach((errorKey) => {
+                        //====================================
+                        if (
+                            controlName === 'firstName' &&
+                            errorKey === 'required'
+                        ) {
+                            if (textRequired.length === 0) {
+                                textRequired += ' Tên người dùng';
+                            } else {
+                                textRequired += ', Tên người dùng';
+                            }
+                        }
+                        if (
+                            controlName === 'firstName' &&
+                            errorKey === 'maxlength'
+                        ) {
+                            if (textMaxLength.length === 0) {
+                                textMaxLength += ' Tên người dùng';
+                            } else {
+                                textMaxLength += ', Tên người dùng';
+                            }
+                        }
+                        //====================================
+ 
+                    });
+                }
+            });
+            if (textRequired.length > 0) {
+                this.toastr.error('Yêu cầu nhập:' + textRequired, 'Lỗi');
+            }
+            if (textMaxLength.length > 0) {
+                this.toastr.error(
+                    'Các trường bị quá số kí tự cho phép:' + textMaxLength,
+                    'Lỗi'
+                );
+            }
+        }
     }
 
     editUser(myForm: FormGroup) {

@@ -1,14 +1,38 @@
 <form [formGroup]="myForm" >
-    <mat-card class="mb-15 tagus-card">
+    <mat-card class="tagus-card" >
         <mat-card-content>
-            <div class="row">
+            <div class="row mr-10 ml-10">
+
                 <div class="col-lg-6">
                     <v-text-box 
-                        label="Tên"
-                        [control]="elementFormControl('firstName')"
+                        label="Tên đăng nhập"
+                        [control]="elementFormControl('username')"
                         [required]="true"
-                        [message] = "errorMessage.firstName"
-                        (touched)="onTouch('firstName')"
+                        [message] = "errorMessage.username"
+                        (touched)="onTouch('username')"
+                    ></v-text-box>
+                
+                </div>
+                
+                <div class="col-lg-6">
+                    <v-text-box 
+                        [inputType]="'password'"  
+                        label="Mật khẩu"
+                        [control]="elementFormControl('password')"
+                        [required]="true"
+                        [message] = "errorMessage.password"
+                        (touched)="onTouch('password')"
+                    ></v-text-box>
+                
+                </div>
+
+                <div class="col-lg-6">
+                    <v-text-box 
+                        label="Họ"
+                        [control]="elementFormControl('lastName')"
+                        [required]="true"
+                        [message] = "errorMessage.lastName"
+                        (touched)="onTouch('lastName')"
                     ></v-text-box>
                 
                 </div>
@@ -23,10 +47,19 @@
                     ></v-text-box>
                 
                 </div>
+
+                
         </div>
         </mat-card-content>
 
-        
+        <div class="d-flex justify-content-end mt-20">
+            <v-button class="mr-10 mb-10" (clickEvent)="cancel()">
+                <i class="ri-close-line"></i>Huỷ
+            </v-button>
+            <v-button (clickEvent)="saveOrUpdate()" type="primary" class="mr-10 mb-10">
+                <i class="ri-save-3-line"></i>Lưu
+            </v-button>
+        </div>
     </mat-card>
 
 </form>
