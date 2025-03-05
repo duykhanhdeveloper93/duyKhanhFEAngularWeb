@@ -1,0 +1,9 @@
+<button
+    type="button"
+    class="v-btn d-flex align-items-center justify-content-center"
+    [disabled]="disabled"
+    [ngClass]="custom()"
+    (click)="onClick()"
+>
+    <ng-content></ng-content>
+</button>
