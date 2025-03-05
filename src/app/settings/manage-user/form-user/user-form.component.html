@@ -48,6 +48,17 @@
                 
                 </div>
 
+                <div class="col-lg-6">
+                    <v-text-box 
+                        label="Địa chỉ"
+                        [control]="elementFormControl('address')"
+                        [required]="true"
+                        [message] = "errorMessage.address"
+                        (touched)="onTouch('address')"
+                    ></v-text-box>
+                
+                </div>
+
                 
         </div>
         </mat-card-content>

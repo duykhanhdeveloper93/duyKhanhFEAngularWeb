@@ -140,7 +140,10 @@ export class UserFormComponent implements AfterViewInit, OnInit {
                         Validators.maxLength(255)]],
             lastName: ['', 
                         [Validators.required, 
-                        Validators.maxLength(255)]]
+                        Validators.maxLength(255)]],
+            address: ['', 
+                            [Validators.required, 
+                            Validators.maxLength(255)]]
         });
     }
 
