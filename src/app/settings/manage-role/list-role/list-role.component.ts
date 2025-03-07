@@ -23,13 +23,7 @@ interface Role {
 
 interface PaginatedResponse {
   items: Role[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    pageSizeOptions: number[];
-  };
+  count: number;
 }
 
 @Component({
@@ -69,19 +63,26 @@ export class ListRoleComponent {
   pageSize = signal<number>(10);
   pageSizeOptions = signal<number[]>([10, 20, 50, 100]);
   currentPage = signal<number>(0);
+  paginateOptions: any = {};
 
   constructor() {
     this.loadRoles();
   }
 
-  loadRoles(page: number = 1, limit: number = this.pageSize()): void {
+  loadRoles(skip:number = 0,top : number = this.pageSize() - 1): void {
+    this.paginateOptions = {
+      skip: skip,
+      top: top,
+      order: { createdAt: 'desc' },
+      keyword: ""
+    }
     this.loading.set(true);
     this.error.set(null);
 
-    this.roleService.getRoles({ page, limit }).subscribe({
+    this.roleService.getRoles(this.paginateOptions).subscribe({
       next: (response: PaginatedResponse) => {
         this.roles.set(response.items);
-        this.totalItems.set(response.meta.total);
+        this.totalItems.set(response.count);
        
         this.loading.set(false);
       },

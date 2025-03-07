@@ -6,6 +6,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -22,6 +23,8 @@ export const appConfig: ApplicationConfig = {
             positionClass: 'toast-top-right',
             preventDuplicates: true,
           }), 
+
+          importProvidersFrom(NgxSpinnerModule.forRoot()), // Thêm dòng này
          
     ],
 };

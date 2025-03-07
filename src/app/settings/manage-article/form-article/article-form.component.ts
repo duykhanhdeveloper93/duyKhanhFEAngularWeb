@@ -51,13 +51,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/custom-errorstatematcher/custom-errorstatematcher.component';
 import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
 import { VButtonComponent } from '../../../common/my-template/v-button/button.component';
-import { UserService } from '../../../_service/user.service';
+import { ArticleService } from '../../../_service/article.service';
+
 
 
 @Component({
-    selector: 'user-form',
-    templateUrl: './user-form.component.html',
-    styleUrls: ['./user-form.component.scss'],
+    selector: 'article-form',
+    templateUrl: './article-form.component.html',
+    styleUrls: ['./article-form.component.scss'],
     standalone: true, // Thêm dòng này để khai báo là standalone component
     imports: [
         MatCardModule,
@@ -77,7 +78,7 @@ import { UserService } from '../../../_service/user.service';
         ]
     // encapsulation: ViewEncapsulation.None,
 })
-export class UserFormComponent implements AfterViewInit, OnInit {
+export class ArticleFormComponent implements AfterViewInit, OnInit {
     @Input() action: string;
 
     id: number;
@@ -94,7 +95,7 @@ export class UserFormComponent implements AfterViewInit, OnInit {
     show_button_delete: boolean = false;
     selection = new SelectionModel<PeriodicElement>(true, []);
     selectedItems: PeriodicElement[] = [];
-    currentUser: any;
+    currentArticle: any;
     isAdmin: boolean = false;
     siteIdCurrent: number = 1;
 
@@ -124,33 +125,19 @@ export class UserFormComponent implements AfterViewInit, OnInit {
    
     formInit() {
         this.myForm = this.formBuilder.group({
-            username: ['', 
-                [
-                    Validators.required,
-                    Validators.maxLength(11),
-                    Validators.minLength(10),
-                    Validators.pattern(regexs.usernameRegex)],
-                ],
-            password: ['', 
-                        [Validators.required,
-                        Validators.pattern(regexs.regex_password)],
-                        ],
-            firstName: ['', 
+            title: ['', 
                         [Validators.required, 
                         Validators.maxLength(255)]],
-            lastName: ['', 
+            content: ['', 
                         [Validators.required, 
-                        Validators.maxLength(255)]],
-            address: ['', 
-                            [Validators.required, 
-                            Validators.maxLength(255)]]
+                        Validators.maxLength(4000)]],
         });
     }
 
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
-        private userService: UserService,
+        private articleService: ArticleService,
         private _liveAnnouncer: LiveAnnouncer,
         private route: ActivatedRoute,
         public dialog: MatDialog,
@@ -190,13 +177,13 @@ export class UserFormComponent implements AfterViewInit, OnInit {
     saveOrUpdate() {
         this.submitted = true;
         if (this.action == 'save') {
-            this.addUser(this.myForm);
+            this.addArticle(this.myForm);
         } else {
-            this.editUser(this.myForm);
+            this.editArticle(this.myForm);
         }
     }
 
-    addUser(myForm: FormGroup) {
+    addArticle(myForm: FormGroup) {
         if (myForm.invalid) {
             this.getErrorForm();
             return;
@@ -204,7 +191,7 @@ export class UserFormComponent implements AfterViewInit, OnInit {
         const bodyData = this.myForm.value;
         bodyData.status = true;
         this.spinnerService.show();
-        this.userService.createUser(bodyData).subscribe({
+        this.articleService.createArticle(bodyData).subscribe({
             next: async (res) => {
                 if (res.status === true) {
                    
@@ -273,13 +260,13 @@ export class UserFormComponent implements AfterViewInit, OnInit {
         }
     }
 
-    editUser(myForm: FormGroup) {
+    editArticle(myForm: FormGroup) {
        
     }
 
     
     cancel() {
-        this.router.navigate(['/settings/manage-user']);
+        this.router.navigate(['/settings/manage-article']);
     }
 
 }

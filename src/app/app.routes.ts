@@ -197,6 +197,8 @@ import { TeamMembersComponent } from './pages/users-page/team-members/team-membe
 import { ListUserComponent } from './settings/manage-user/list-user/list-user.component';
 import { ListRoleComponent } from './settings/manage-role/list-role/list-role.component';
 import { CreateUserComponent } from './settings/manage-user/create_user/create-user.component';
+import { CreateArticleComponent } from './settings/manage-article/create_article/create-article.component';
+import { ListArticleComponent } from './settings/manage-article/list-article/list-article.component';
 
 export const routes: Routes = [
 
@@ -222,9 +224,11 @@ export const routes: Routes = [
             {path: '', component: AccountSettingsComponent},
             {path: 'change-password', component: ChangePasswordComponent},
             {path: 'connections', component: ConnectionsComponent},
-            {path: 'manage-user/add', component: CreateUserComponent},
             {path: 'manage-role', component: ListRoleComponent},
-            {path: 'manage-user', component: ListUserComponent}
+            {path: 'manage-user/add', component: CreateUserComponent},
+            {path: 'manage-user', component: ListUserComponent},
+            {path: 'manage-article/add', component: CreateArticleComponent},
+            {path: 'manage-article', component: ListArticleComponent}
         ]
     },
     

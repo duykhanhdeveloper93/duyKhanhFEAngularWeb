@@ -35,7 +35,7 @@ export class UserService {
         private http: HttpClient
     ) {}
 
-    getUsers(options: { page: number; limit: number }): Observable<any> {
+    getUsers(options: any): Observable<any> {
         return this.http.get(AUTH_API, { params: { ...options } });
     }
 
