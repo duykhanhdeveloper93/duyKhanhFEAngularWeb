@@ -5,7 +5,7 @@
 
                 <div class="col-lg-6">
                     <v-text-box 
-                        label="Họ"
+                        label="Tiêu đề"
                         [control]="elementFormControl('title')"
                         [required]="true"
                         [message] = "errorMessage.title"
@@ -13,15 +13,18 @@
                     ></v-text-box>
                 
                 </div>
+                <div class="col-lg-12">
+                    <input type="file" accept="image/png, image/jpeg, image/jpg, image/gif" (change)="onFileChange($event)">
 
-                <div class="col-lg-6">
-                    <v-text-box 
-                        label="Tên"
+                </div>
+                <div class="col-lg-12">
+                    <v-content-editor
+                        label="Nội dung"
                         [control]="elementFormControl('content')"
                         [required]="true"
                         [message] = "errorMessage.content"
                         (touched)="onTouch('content')"
-                    ></v-text-box>
+                    ></v-content-editor>
                 
                 </div>
 

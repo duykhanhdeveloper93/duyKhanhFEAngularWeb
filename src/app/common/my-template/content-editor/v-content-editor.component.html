@@ -1,0 +1,21 @@
+<div class="custom-input" [ngClass]="getDisplayType()">
+    <label class="d-block fw-semibold gray-color lbl mb-5"
+        >{{ label }}
+        <span *ngIf="required" class="ml-5 text-red">*</span></label
+    >
+    <quill-editor
+    [styles]="{
+        width: '100%',
+        height: '400px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        padding: '10px'
+        }"
+        [formControl]="control"
+        [modules]="modules"
+    ></quill-editor>
+    <mat-hint *ngIf="control && control.errors" class="danger-message"
+        >{{ message }}
+    </mat-hint>
+</div>

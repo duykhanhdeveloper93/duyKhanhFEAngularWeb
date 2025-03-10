@@ -52,8 +52,9 @@ import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/cus
 import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
 import { VButtonComponent } from '../../../common/my-template/v-button/button.component';
 import { ArticleService } from '../../../_service/article.service';
-
-
+import { QuillModule } from 'ngx-quill';
+import { VContentEditorComponent } from '../../../common/my-template/content-editor/v-content-editor.component';
+import { saveAs } from 'file-saver'
 
 @Component({
     selector: 'article-form',
@@ -74,7 +75,10 @@ import { ArticleService } from '../../../_service/article.service';
         RouterLink,
         VTextBoxComponent,
         RouterLink, RouterOutlet, MatCardModule, MatButtonModule, RouterLinkActive,
-        VButtonComponent
+        VButtonComponent,
+        VContentEditorComponent ,
+        QuillModule
+
         ]
     // encapsulation: ViewEncapsulation.None,
 })
@@ -107,11 +111,13 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     dataReturn: any;
     selectedNumber = 1;
 
+    selectedFile: File;
+
     errorMessage: any = {
-        firstName: ''
+        title: '',
+        content: ''
        
     };
-
     selectedFeatures: any[]
 
     get f(): { [key: string]: AbstractControl } {
@@ -131,6 +137,10 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
             content: ['', 
                         [Validators.required, 
                         Validators.maxLength(4000)]],
+
+            image_title_path: ['', 
+                            [Validators.required, 
+                            Validators.maxLength(1000)]],
         });
     }
 
@@ -148,6 +158,29 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     ) {
        
         this.formInit();
+    }
+
+
+    saveFile(blob: Blob, filename: string) {
+        saveAs(blob, filename);
+    }
+    
+
+    onFileChange(event: any) {
+        this.selectedFile = event.target.files[0];
+        if (this.isValidImageFile(this.selectedFile)) {
+        this.myForm.patchValue({
+            image_title_path: this.selectedFile
+        });
+        } else {
+            // Handle invalid file type
+            alert('Please select a valid image file (PNG, JPEG, JPG, GIF)');
+        }
+    }
+
+    isValidImageFile(file: File): boolean {
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+        return allowedTypes.includes(file.type);
     }
 
     onTouch(name: any) {
@@ -189,7 +222,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
             return;
         }
         const bodyData = this.myForm.value;
-        bodyData.status = true;
+        bodyData.status = 1;
         this.spinnerService.show();
         this.articleService.createArticle(bodyData).subscribe({
             next: async (res) => {
@@ -224,23 +257,43 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                     Object.keys(control!.errors).forEach((errorKey) => {
                         //====================================
                         if (
-                            controlName === 'firstName' &&
+                            controlName === 'title' &&
                             errorKey === 'required'
                         ) {
                             if (textRequired.length === 0) {
-                                textRequired += ' Tên người dùng';
+                                textRequired += ' Tiêu đề';
                             } else {
-                                textRequired += ', Tên người dùng';
+                                textRequired += ', Tiêu đề';
                             }
                         }
                         if (
-                            controlName === 'firstName' &&
+                            controlName === 'title' &&
                             errorKey === 'maxlength'
                         ) {
                             if (textMaxLength.length === 0) {
-                                textMaxLength += ' Tên người dùng';
+                                textMaxLength += ' Tiêu đề';
                             } else {
-                                textMaxLength += ', Tên người dùng';
+                                textMaxLength += ', Tiêu đề';
+                            }
+                        }
+                        if (
+                            controlName === 'content' &&
+                            errorKey === 'required'
+                        ) {
+                            if (textRequired.length === 0) {
+                                textRequired += ' Nội dung';
+                            } else {
+                                textRequired += ', Nội dung';
+                            }
+                        }
+                        if (
+                            controlName === 'content' &&
+                            errorKey === 'maxlength'
+                        ) {
+                            if (textMaxLength.length === 0) {
+                                textMaxLength += ' Nội dung';
+                            } else {
+                                textMaxLength += ', Nội dung';
                             }
                         }
                         //====================================

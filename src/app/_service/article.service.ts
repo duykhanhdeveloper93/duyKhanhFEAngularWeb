@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 
 
-const AUTH_API = `${environment.apiUrl}/api/v1/articles/`;
+const AUTH_API = `${environment.apiUrl}/api/v1/content/`;
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     withCredentials: true,
