@@ -31,6 +31,8 @@
                         MAIN
                     </span>
                     
+
+
                     <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = true">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -46,6 +48,11 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
+                            <li class="sidemenu-item">
+                                <a routerLink="/contacts" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Liên hệ
+                                </a>
+                            </li>
                             <li class="sidemenu-item">
                                 <a routerLink="/settings/manage-user" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Quản lý người dùng

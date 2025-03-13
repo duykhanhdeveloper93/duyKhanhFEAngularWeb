@@ -14,11 +14,28 @@
                 
                 </div>
                 <div class="col-lg-12">
-                    <input type="file" accept="image/png, image/jpeg, image/jpg, image/gif" (change)="onFileChange($event)">
+                    <div class="v-customize-input" >
+                        <label  class="d-block fw-semibold gray-color lbl mb-5">
+                            anh dai dien
+                            <span  class="ml-5 text-red">*</span>
+                        </label>
+                        <div style="margin-bottom: 80px;display: flex;flex-direction: row;">
+                            <div>
+                                <input type="file" (change)="onFileSelected($event)" />
+                            </div>
+                            <div>
+                                <img src="images/admin.png" class="rounded-circle" width="60" alt="user-image">
+                            </div>
+                            
+                        </div>
+                           
+                       
+                    </div>
 
                 </div>
                 <div class="col-lg-12">
                     <v-content-editor
+                       
                         label="Nội dung"
                         [control]="elementFormControl('content')"
                         [required]="true"

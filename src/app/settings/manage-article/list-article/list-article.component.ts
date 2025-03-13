@@ -10,108 +10,120 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ArticleService } from '../../../_service/article.service';
+import { PAGE_SIZE } from '../../../_common';
+import { VTableComponent } from '../../../common/my-template/table/table.component';
+import { VButtonComponent } from '../../../common/my-template/v-button/button.component';
 
 interface Article {
-  id: number;
-  articlename: string;
-  email: string;
-  fullName: string;
-  status: boolean;
-  createdAt: Date;
+    id: number;
+    articlename: string;
+    email: string;
+    fullName: string;
+    status: boolean;
+    createdAt: Date;
 }
 
 interface PaginatedResponse {
-  items: Article[];
-  count: number;
+    items: Article[];
+    count: number;
 }
 
 @Component({
-  selector: 'app-list-article',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    MatTableModule,
-    MatPaginatorModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatChipsModule,
-    MatProgressSpinnerModule
-  ],
-  templateUrl: './list-article.component.html',
-  styleUrl: './list-article.component.scss'
+    selector: 'app-list-article',
+    standalone: true,
+    imports: [
+        CommonModule,
+        RouterLink,
+        MatTableModule,
+        MatPaginatorModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        MatChipsModule,
+        MatProgressSpinnerModule,
+        VTableComponent,
+        VButtonComponent
+    ],
+    templateUrl: './list-article.component.html',
+    styleUrl: './list-article.component.scss',
 })
 export class ListArticleComponent {
-  private articleService = inject(ArticleService);
-  
-  articles = signal<Article[]>([]);
-  totalItems = signal<number>(0);
-  loading = signal<boolean>(false);
-  error = signal<string | null>(null);
-  
-  displayedColumns: string[] = [
-    'id', 
-    'title', 
-    'createdAt', 
-    'actions'
-  ];
-  
-  // Pagination
-  pageSize = signal<number>(10);
-  pageSizeOptions = signal<number[]>([10, 20, 50, 100]);
-  currentPage = signal<number>(0);
+    private articleService = inject(ArticleService);
+    listData: PeriodicElement = {};
 
-  paginateOptions: any = {};
+    displayedColumns: string[] = ['index', 'title', 'actions'];
 
-  constructor(
-    private router: Router
-  ) {
-    
-    this.loadArticles();
-  }
+    // Pagination
+    protected readonly pageSizeOptions: number[] = [
+        PAGE_SIZE.S5,
+        PAGE_SIZE.SM,
+        PAGE_SIZE.S25,
+        PAGE_SIZE.S100,
+    ];
+    pageSize: number = PAGE_SIZE.SM;
+    resetPageIndex: boolean = false;
+    pageIndex: number = 0;
+    paginateOptions: any = {};
 
-  loadArticles(skip:number = 0,top : number = this.pageSize() - 1): void {
-    this.paginateOptions = {
-      skip: skip,
-      top: top,
-      order: { createdAt: 'desc' },
-      keyword: ""
+    filterValue: any = {
+        skip: this.pageIndex,
+        top: this.pageSize,
+        keyword: '',
+    };
+
+    constructor(private router: Router) {}
+
+    ngOnInit(): void {
+        this.getList(this.filterValue);
     }
-    this.loading.set(true);
-    this.error.set(null);
 
-
-    this.articleService.getArticle(this.paginateOptions).subscribe({
-      next: (response: PaginatedResponse) => {
-        this.articles.set(response.items);
-        this.totalItems.set(response.count);
-       
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading articles:', err);
-        this.error.set('Không thể tải danh sách người dùng');
-        this.loading.set(false);
-      }
-    });
-  }
-
-  onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
-    this.pageSize.set(event.pageSize);
-    this.loadArticles((this.currentPage() - 1)  * this.pageSize(), this.pageSize());
-  }
-
-  deleteArticle(articleId: number): void {
-    if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-      // Implement delete logic here
-      console.log('Deleting article:', articleId);
+    onTableChange(event: any) {
+        const { pageIndex, pageSize } = event.paginator.event;
+        if (pageIndex >= 0) this.pageIndex = pageIndex;
+        if (pageSize) this.pageSize = pageSize;
+        if (this.resetPageIndex) this.resetPageIndex = false;
+        const skip = pageIndex * pageSize;
+        const top = pageSize + skip;
+        this.filterValue = { ...this.filterValue, skip, top };
+        this.getList(this.filterValue);
     }
-  }
 
-  addNewArticle() {
-    this.router.navigate(['/settings/manage-article/add']);
+    getList(payload: any) {
+        this.articleService.getArticle(payload).subscribe({
+            next: (res) => {
+                const items = res?.items.map(
+                    (item: any, index: number) => {
+                        return {
+                            ...item,
+                            index: this.pageIndex * this.pageSize + 1 + index,
+                        };
+                    }
+                );
+                this.listData = {
+                    items: items,
+                    total: res?.count,
+                };
+            },
+            error: (err) => {},
+        });
+    }
+
+    deleteArticle(articleId: number): void {
+        if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+            // Implement delete logic here
+            console.log('Deleting article:', articleId);
+        }
+    }
+
+    addNewArticle() {
+        this.router.navigate(['/settings/manage-article/add']);
+    }
 }
+
+export interface PeriodicElement {
+    items?: {
+        id: number;
+    }[];
+    total?: number;
 }

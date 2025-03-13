@@ -215,6 +215,7 @@ export const routes: Routes = [
             {path: 'logout', component: LogoutComponent}
         ]
     },
+     {path: 'contacts', component: ContactsComponent},
     {path: 'my-profile', component: MyProfileComponent},
     {path: 'to-do-list', component: ToDoListComponent},
     {

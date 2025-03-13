@@ -20,7 +20,7 @@ export class RoleService {
     ) {}
 
     getRoles(options: any): Observable<any> {
-        return this.http.get(AUTH_API, { params: { ...options } });
+        return this.http.post(AUTH_API + '/paginate', options, httpOptions);
     }
 
     deleteRole(id: number): Observable<void> {

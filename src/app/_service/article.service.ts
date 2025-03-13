@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 
 
-const AUTH_API = `${environment.apiUrl}/api/v1/content/`;
+const URL = `${environment.apiUrl}/api/v1/content/`;
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     withCredentials: true,
@@ -22,20 +22,34 @@ export class CreateArticleDto {
     providedIn: 'root',
 })
 export class ArticleService {
+
     constructor(
         private http: HttpClient
     ) {}
 
-    getArticle(options: { page: number; limit: number }): Observable<any> {
-        return this.http.get(AUTH_API, { params: { ...options } });
+    uploadFile(id: string, formData: FormData): Observable<any> {
+        const uploadOptions = {
+            withCredentials: true, // Nếu cần gửi cookie
+            reportProgress: true,  // Theo dõi tiến trình
+            observe: 'events' as const // Nhận sự kiện upload
+        };
+    
+        return this.http.post(`${URL}upload/${id}`, formData, uploadOptions);
+    }
+    
+
+
+
+    getArticle(options: any): Observable<any> {
+        return this.http.post(URL + 'search', options, httpOptions);
     }
 
     deleteArticle(id: number): Observable<void> {
-        return this.http.delete<void>(`${AUTH_API}/${id}`);
+        return this.http.delete<void>(`${URL}/${id}`);
     }
 
     createArticle(body: CreateArticleDto): Observable<any> {
-        return this.http.post(AUTH_API + 'createArticle', body, httpOptions);
+        return this.http.post(URL + 'createArticle', body, httpOptions);
     }
 
 }

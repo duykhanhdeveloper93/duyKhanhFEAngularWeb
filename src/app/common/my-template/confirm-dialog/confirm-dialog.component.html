@@ -1,0 +1,83 @@
+<div class="create-dialog-box v-confirm-dialog">
+    <div
+        class="header d-flex align-items-center justify-content-space-between"
+        [ngStyle]="dialogData.titleStyle"
+    >
+        <div class="header-title">
+            <span class="mb-0">{{ dialogData.title }}</span>
+        </div>
+        <div class="header-close">
+            <a
+                class="bg-transparent p-0 border-none"
+                matTooltip="Đóng"
+                (click)="close()"
+            >
+                <i class="flaticon-close"></i
+            ></a>
+        </div>
+    </div>
+    <div class="v-confirm-dialog-content">
+        <p
+            class="d-flex justify-content-center align-items-center text-center"
+            mat-dialog-content
+            [innerHtml]="dialogData.body"
+        ></p>
+        <div class="text-center d-flex justify-content-center">
+            <v-button
+                [type]="
+                    dialogData.buttons.cancelType
+                        ? dialogData.buttons.cancelType
+                        : 'default'
+                "
+                (click)="close()"
+            >
+                <div class="d-flex justify-content-center align-items-center">
+                    <div
+                        class="d-flex justify-content-center align-items-center"
+                    >
+                        <i
+                            [ngClass]="
+                                dialogData.buttons.cancelIcon
+                                    ? dialogData.buttons.cancelIcon
+                                    : 'ri-close-fill'
+                            "
+                        ></i>
+                    </div>
+                    <div class="ms-5">
+                        <span>
+                            {{ dialogData.buttons.cancel }}
+                        </span>
+                    </div>
+                </div>
+            </v-button>
+            <v-button
+                [type]="
+                    dialogData.buttons.confirmType
+                        ? dialogData.buttons.confirmType
+                        : 'primary'
+                "
+                (click)="confirm()"
+                class="ms-10"
+            >
+                <div class="d-flex justify-content-center align-items-center">
+                    <div
+                        class="d-flex justify-content-center align-items-center"
+                    >
+                        <i
+                            [ngClass]="
+                                dialogData.buttons.confirmIcon
+                                    ? dialogData.buttons.confirmIcon
+                                    : 'ri-check-fill'
+                            "
+                        ></i>
+                    </div>
+                    <div class="ms-5">
+                        <span>
+                            {{ dialogData.buttons.confirm }}
+                        </span>
+                    </div>
+                </div>
+            </v-button>
+        </div>
+    </div>
+</div>

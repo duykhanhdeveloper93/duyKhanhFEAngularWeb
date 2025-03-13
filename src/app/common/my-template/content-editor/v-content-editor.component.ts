@@ -9,6 +9,9 @@ import {
     ChangeDetectorRef,
     OnInit,
     OnDestroy,
+    Output,
+    EventEmitter,
+    ViewChild,
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -22,9 +25,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Editor, Toolbar } from 'ngx-editor';
-import { EditorChangeContent, EditorChangeSelection, QuillModule, QuillModules } from 'ngx-quill';
-import Quill from 'quill';
+import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent, QuillModule, QuillModules } from 'ngx-quill';
 import { CustomErrorstatematcherComponent } from '../../../ui-elements/input/custom-errorstatematcher/custom-errorstatematcher.component';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
     selector: 'v-content-editor',
@@ -65,11 +68,35 @@ export class VContentEditorComponent
     @Input() control: FormControl;
     @Input() displayType: 'row' | 'column' = 'column';
 
-    constructor(private cdr: ChangeDetectorRef) {}
+    @Output() uploadFileFromQuill: EventEmitter<{ file: File; tempImageUrl: string }> = new EventEmitter<{ file: File; tempImageUrl: string }>();
+
+       
+    quill!: any;
+    setEditorInstance(quill: any) {
+        this.quill = quill;
+        console.log('Quill instance:', this.quill);
+    }
+
+    onMediaUpload(file: any) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const tempImageUrl = reader.result as string;
+            this.uploadFileFromQuill.emit({ file, tempImageUrl});
+        };
+        reader.readAsDataURL(file);
+    }
+
+    constructor(
+        private cdr: ChangeDetectorRef,
+        private sanitizer: DomSanitizer) {
+
+    }
     blurred: boolean = false;
     focused: boolean = false;
     editor: Editor;
     html: '';
+
+
     
     toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],
@@ -88,10 +115,36 @@ export class VContentEditorComponent
         ['emoji']
       ];
       
-
     modules: QuillModules = {
-        toolbar: this.toolbarOptions,
+        toolbar: {
+            container: this.toolbarOptions,
+            handlers: {
+                image: () => this.selectLocalImage(),
+            },
+        },
     };
+
+    selectLocalImage() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+    
+        input.onchange = () => {
+            const file = input.files?.[0];
+            if (file) {
+                const reader = new FileReader();
+    
+                reader.onload = () => {
+                    const range = this.quill.getSelection(); // Lấy vị trí con trỏ
+                    this.quill.insertEmbed(range?.index || 0, 'image', reader.result);
+                };
+    
+                reader.readAsDataURL(file);
+            }
+        };
+    }
+
     onChange: (value: any) => void;
     onTouched: () => void;
     writeValue(value: any): void {
@@ -126,4 +179,7 @@ export class VContentEditorComponent
     ngOnDestroy(): void {
         this.editor.destroy();
     }
+
+
+   
 }

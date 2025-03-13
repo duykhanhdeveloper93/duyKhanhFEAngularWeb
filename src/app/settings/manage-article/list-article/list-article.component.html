@@ -1,89 +1,74 @@
-<div class="list-container">
-    <div class="header">
-      <h2>Danh sách báo mạng</h2>
-      <button mat-raised-button color="primary" (click)="addNewArticle()">
-        <mat-icon>add</mat-icon>
-        Thêm mới
-      </button>
-    </div>
-  
-    <mat-card>
-      <mat-card-content>
-        @if (error()) {
-          <div class="error-message">
-            {{ error() }}
-          </div>
-        }
-  
-        @if (loading()) {
-          <div class="loading-spinner">
-            <mat-spinner diameter="40"></mat-spinner>
-          </div>
-        }
-  
-        @if (!loading() && !error()) {
-          <table mat-table [dataSource]="articles()" class="mat-elevation-z8">
-            <!-- ID Column -->
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef> ID </th>
-              <td mat-cell *matCellDef="let article"> {{article.id}} </td>
-            </ng-container>
-  
-            <!-- Articlename Column -->
-            <ng-container matColumnDef="title">
-              <th mat-header-cell *matHeaderCellDef> Tên đăng nhập </th>
-              <td mat-cell *matCellDef="let article"> {{article.title}} </td>
-            </ng-container>
-  
-           
-  
-            <!-- Created Date Column -->
-            <ng-container matColumnDef="createdAt">
-              <th mat-header-cell *matHeaderCellDef> Ngày tạo </th>
-              <td mat-cell *matCellDef="let article"> {{article.createdAt | date:'dd/MM/yyyy'}} </td>
-            </ng-container>
-  
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef> Thao tác </th>
-              <td mat-cell *matCellDef="let article">
-                <button mat-icon-button [matMenuTriggerFor]="menu" color="primary">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item [routerLink]="['/articles/edit', article.id]">
-                    <mat-icon>edit</mat-icon>
-                    <span>Sửa</span>
-                  </button>
-                  <button mat-menu-item (click)="deleteArticle(article.id)">
-                    <mat-icon>delete</mat-icon>
-                    <span>Xóa</span>
-                  </button>
-                </mat-menu>
-              </td>
-            </ng-container>
-  
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-  
-          @if (articles().length === 0) {
-            <div class="no-data">
-              Không có dữ liệu
-            </div>
-          }
-  
-          <mat-paginator
-            [length]="totalItems()"
-            [pageSize]="pageSize()"
-            [pageSizeOptions]="pageSizeOptions()"
-            (page)="onPageChange($event)"
-            showFirstLastButtons>
-          </mat-paginator>
 
+<mat-card class="mb-15 mt-m13 tagus-card">
+    <mat-card-header class="mb-15">
+        <div class="d-flex justify-content-center">
+            <v-button
+                
+                class="me-10"
+                type="primary-hb"
+                type="primary-hb"
+                (click)="addNewArticle()"
+            >
+                <i class="ri-add-fill"></i> Thêm mới
+            </v-button>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="mt-15 no-shadow">
+            <v-table
+                [data]="listData"
+                [displayedColumns]="displayedColumns"
+                (tableChange)="onTableChange($event)"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions"
+                [resetPageIndex]="resetPageIndex"
+            >
+                <ng-container matColumnDef="index">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                        <div
+                            class="d-flex justify-content-center align-items-center"
+                        >
+                            STT
+                        </div>
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="text-start">
+                        {{ element.index }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="title">
+                    <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        class="text-center"
+                        style="width: 40%"
+                    >
+                        <div
+                            class="d-flex justify-content-center align-items-center"
+                        >
+                            Tiêu đề báo in
+                        </div>
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="text-start">
+                        {{ element.title }}
+                    </td>
+                </ng-container>
 
-        }
-      </mat-card-content>
-    </mat-card>
-  </div>
-  
+                <ng-container matColumnDef="actions">
+                    <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        class="bold text-center"
+                        style="width: 230px"
+                    >
+                        Thao tác
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="text-center">
+                        <div class="d-flex justify-content-center">
+                            
+                        </div>
+                    </td>
+                </ng-container>
+            </v-table>
+        </div>
+    </mat-card-content>
+</mat-card>

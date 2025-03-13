@@ -2,9 +2,7 @@ import {
     Component,
     Input,
     OnInit,
-    ViewChild,
     AfterViewInit,
-    ViewEncapsulation,
 } from '@angular/core';
 import {
     FormControl,
@@ -18,30 +16,20 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
 
 
 import {
-    PAGE_SIZE,
-    ResponseCodeEnum,
-    TOASTR_MSG,
     TOASTR_TITLE,
-    pageSizeOptions,
-    regexs,
 } from '../../../_common';
-import { lastValueFrom, Subject, Subscription } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { SelectionModel } from '@angular/cdk/collections';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { VTextOnlyComponent } from '../../../common/my-template/v-text-only/v-text-only.component';
 import { ToastrService } from 'ngx-toastr';
 import {
     getErrorMessageForControl,
-    getFormControlErrorMessages,
 } from '../../../_helpers/helpers';
 import { VTextBoxComponent } from '../../../common/my-template/text-box/text-box.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -55,6 +43,8 @@ import { ArticleService } from '../../../_service/article.service';
 import { QuillModule } from 'ngx-quill';
 import { VContentEditorComponent } from '../../../common/my-template/content-editor/v-content-editor.component';
 import { saveAs } from 'file-saver'
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 
 @Component({
     selector: 'article-form',
@@ -111,7 +101,9 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     dataReturn: any;
     selectedNumber = 1;
 
-    selectedFile: File;
+    selectedFile: File | null = null;
+
+    tempImages: { file: File; tempImageUrl: string }[] = [];// Biến lưu tạm cái media được upload vào quill
 
     errorMessage: any = {
         title: '',
@@ -136,11 +128,9 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                         Validators.maxLength(255)]],
             content: ['', 
                         [Validators.required, 
-                        Validators.maxLength(4000)]],
+                        Validators.maxLength(4000)]]
 
-            image_title_path: ['', 
-                            [Validators.required, 
-                            Validators.maxLength(1000)]],
+           
         });
     }
 
@@ -160,28 +150,6 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         this.formInit();
     }
 
-
-    saveFile(blob: Blob, filename: string) {
-        saveAs(blob, filename);
-    }
-    
-
-    onFileChange(event: any) {
-        this.selectedFile = event.target.files[0];
-        if (this.isValidImageFile(this.selectedFile)) {
-        this.myForm.patchValue({
-            image_title_path: this.selectedFile
-        });
-        } else {
-            // Handle invalid file type
-            alert('Please select a valid image file (PNG, JPEG, JPG, GIF)');
-        }
-    }
-
-    isValidImageFile(file: File): boolean {
-        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-        return allowedTypes.includes(file.type);
-    }
 
     onTouch(name: any) {
         const f = this.elementFormControl(name);
@@ -207,6 +175,57 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
 
 
 
+    onFileSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            this.selectedFile = file;
+            console.log('File selected:', file.name);
+        }
+    }
+
+    onUpload(): void {
+        if (!this.selectedFile) {
+            this.toastr.error('Vui lòng chọn một file để upload', 'Lỗi');
+            return;
+        }
+
+        const id = this.id.toString(); // Lấy ID bài viết hiện tại
+        this.uploadFile(id, this.selectedFile).subscribe({
+            next: (res) => {
+                this.toastr.success('File uploaded successfully', 'Thành công');
+            },
+            error: (err) => {
+                this.toastr.error('File upload failed', 'Lỗi');
+            },
+        });
+    }
+
+    whenUpdloadMedia(event: any) {
+        
+        this.tempImages.push(event);
+    }
+
+    uploadFile(id: string, file: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        return this.articleService.uploadFile(id, formData).pipe(
+            tap((event) => {
+                if (event.type === HttpEventType.UploadProgress) {
+                    const progress = Math.round((100 * event.loaded) / event.total!);
+                    console.log(`File upload progress: ${progress}%`);
+                } else if (event instanceof HttpResponse) {
+                    console.log('File uploaded successfully', event.body);
+                }
+            }),
+            catchError((error) => {
+                console.error('File upload failed', error);
+                return throwError(() => new Error('File upload failed'));
+            })
+        );
+    }
+
+
     saveOrUpdate() {
         this.submitted = true;
         if (this.action == 'save') {
@@ -221,29 +240,52 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
             this.getErrorForm();
             return;
         }
+    
         const bodyData = this.myForm.value;
         bodyData.status = 1;
         this.spinnerService.show();
+
+       
+    
+    
         this.articleService.createArticle(bodyData).subscribe({
             next: async (res) => {
                 if (res.status === true) {
-                   
                     this.spinnerService.hide();
                     this.toastr.success(res.message, TOASTR_TITLE.SUCCESS);
-                    this.cancel();
+
+                    // // Upload ảnh trong content
+                    // const uploadPromises = this.tempImages.map((image) => {
+                    //     const formData = new FormData();
+                    //     formData.append('file', image.file);
+                
+                    //     // Gọi API upload ảnh
+                    //     return this.articleService.uploadImage(formData).toPromise();
+                    // });
+    
+                    // Kiểm tra nếu có file được chọn thì tiến hành upload
+                    if (this.selectedFile) {
+                        this.uploadFile(res.data.id, this.selectedFile).subscribe({
+                            next: () => {
+                                this.toastr.success('File đã được upload thành công', 'Thành công');
+                            },
+                            error: () => {
+                                this.toastr.error('Không thể upload file', 'Lỗi');
+                            },
+                        });
+                    }
+    
+                    this.cancel(); // Điều hướng sau khi hoàn tất
                 } else {
                     this.toastr.error(res.message, TOASTR_TITLE.ERROR);
                     this.spinnerService.hide();
                 }
             },
             error: (err) => {
-                this.toastr.error(
-                    ` Lỗi`,
-                    'Thông báo lỗi'
-                );
-            }
-        })
-       
+                this.toastr.error('Lỗi khi tạo bài viết', 'Thông báo lỗi');
+                this.spinnerService.hide();
+            },
+        });
     }
 
     getErrorForm() {
