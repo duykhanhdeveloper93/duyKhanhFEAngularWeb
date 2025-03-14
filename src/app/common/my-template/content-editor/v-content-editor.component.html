@@ -15,8 +15,7 @@
             }"
             (onEditorCreated)="setEditorInstance($event)"
             [formControl]="control"
-            [modules]="modules"
-            (media-upload)="onMediaUpload($event)">
+            [modules]="modules">
         </quill-editor>
     <mat-hint *ngIf="control && control.errors" class="danger-message"
         >{{ message }}

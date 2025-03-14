@@ -64,8 +64,22 @@
                     </th>
                     <td mat-cell *matCellDef="let element" class="text-center">
                         <div class="d-flex justify-content-center">
-                            
-                        </div>
+                          
+                    <v-icon-button
+                        matTooltip="Chỉnh sửa câu hỏi"
+                        (click)="editArticle()"
+                    >
+                        <i class="ri-edit-fill"></i>
+                    </v-icon-button>
+                    <v-icon-button
+
+                        color="warn"
+                        matTooltip="Xóa câu hỏi"
+                        (click)="cancel()"
+                    >
+                        <i class="ri-delete-bin-line"></i>
+                    </v-icon-button>
+                      </div>
                     </td>
                 </ng-container>
             </v-table>

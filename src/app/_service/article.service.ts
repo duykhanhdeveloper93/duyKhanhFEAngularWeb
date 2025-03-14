@@ -27,6 +27,17 @@ export class ArticleService {
         private http: HttpClient
     ) {}
 
+
+    // Hàm upload file Base64
+    uploadBase64File(base64: string, fileName: string): Observable<any> {
+        const payload = {
+            base64,
+            fileName,
+        };
+
+        return this.http.post(`${URL}upload-base64`, payload, httpOptions);
+    }
+
     uploadFile(id: string, formData: FormData): Observable<any> {
         const uploadOptions = {
             withCredentials: true, // Nếu cần gửi cookie
@@ -52,4 +63,6 @@ export class ArticleService {
         return this.http.post(URL + 'createArticle', body, httpOptions);
     }
 
+
+   
 }

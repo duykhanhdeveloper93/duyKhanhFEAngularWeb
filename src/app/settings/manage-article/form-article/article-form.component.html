@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-lg-12">
                     <v-content-editor
-                       
+                        (uploadFileFromQuill)="whenUploadMedia($event)"
                         label="Nội dung"
                         [control]="elementFormControl('content')"
                         [required]="true"

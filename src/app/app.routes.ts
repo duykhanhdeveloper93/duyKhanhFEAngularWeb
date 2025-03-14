@@ -199,6 +199,7 @@ import { ListRoleComponent } from './settings/manage-role/list-role/list-role.co
 import { CreateUserComponent } from './settings/manage-user/create_user/create-user.component';
 import { CreateArticleComponent } from './settings/manage-article/create_article/create-article.component';
 import { ListArticleComponent } from './settings/manage-article/list-article/list-article.component';
+import { EditArticleComponent } from './settings/manage-article/edit-article/edit-article.component';
 
 export const routes: Routes = [
 
@@ -215,7 +216,7 @@ export const routes: Routes = [
             {path: 'logout', component: LogoutComponent}
         ]
     },
-     {path: 'contacts', component: ContactsComponent},
+    {path: 'contacts', component: ContactsComponent},
     {path: 'my-profile', component: MyProfileComponent},
     {path: 'to-do-list', component: ToDoListComponent},
     {
@@ -229,6 +230,7 @@ export const routes: Routes = [
             {path: 'manage-user/add', component: CreateUserComponent},
             {path: 'manage-user', component: ListUserComponent},
             {path: 'manage-article/add', component: CreateArticleComponent},
+            {path: 'manage-article/edit', component: EditArticleComponent},
             {path: 'manage-article', component: ListArticleComponent}
         ]
     },

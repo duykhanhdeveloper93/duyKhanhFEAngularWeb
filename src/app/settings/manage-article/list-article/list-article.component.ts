@@ -13,6 +13,7 @@ import { ArticleService } from '../../../_service/article.service';
 import { PAGE_SIZE } from '../../../_common';
 import { VTableComponent } from '../../../common/my-template/table/table.component';
 import { VButtonComponent } from '../../../common/my-template/v-button/button.component';
+import { VIconButtonComponent } from '../../../common/my-template/icon-button/button.component';
 
 interface Article {
     id: number;
@@ -43,7 +44,8 @@ interface PaginatedResponse {
         MatChipsModule,
         MatProgressSpinnerModule,
         VTableComponent,
-        VButtonComponent
+        VButtonComponent,
+        VIconButtonComponent
     ],
     templateUrl: './list-article.component.html',
     styleUrl: './list-article.component.scss',
@@ -118,6 +120,15 @@ export class ListArticleComponent {
 
     addNewArticle() {
         this.router.navigate(['/settings/manage-article/add']);
+    }
+
+
+    editArticle() {
+      this.router.navigate(['/settings/manage-article/edit']);
+    }
+
+    cancel() {
+      
     }
 }
 

@@ -77,14 +77,6 @@ export class VContentEditorComponent
         console.log('Quill instance:', this.quill);
     }
 
-    onMediaUpload(file: any) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            const tempImageUrl = reader.result as string;
-            this.uploadFileFromQuill.emit({ file, tempImageUrl});
-        };
-        reader.readAsDataURL(file);
-    }
 
     constructor(
         private cdr: ChangeDetectorRef,
@@ -138,8 +130,14 @@ export class VContentEditorComponent
                 reader.onload = () => {
                     const range = this.quill.getSelection(); // Lấy vị trí con trỏ
                     this.quill.insertEmbed(range?.index || 0, 'image', reader.result);
+                    const tempImageUrl = reader.result as string;
+                    this.uploadFileFromQuill.emit({ file, tempImageUrl});
+
+                    // Cập nhật giá trị của FormControl sau khi ảnh được thêm
+                    const editorContent = this.quill.root.innerHTML;
+                    this.control.setValue(editorContent);
                 };
-    
+               
                 reader.readAsDataURL(file);
             }
         };

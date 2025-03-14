@@ -1,0 +1,12 @@
+<div class="v-icon-btn d-flex align-items-center">
+    <button
+        type="button"
+        mat-icon-button
+        [disabled]="disabled"
+        [color]="color"
+        [ngStyle]="iconStyle"
+        (click)="onClick()"
+    >
+        <ng-content></ng-content>
+    </button>
+</div>

@@ -105,12 +105,15 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
 
     tempImages: { file: File; tempImageUrl: string }[] = [];// Biến lưu tạm cái media được upload vào quill
 
+    mapMedia: { [key: string]: string } = {};
+
     errorMessage: any = {
         title: '',
         content: ''
        
     };
     selectedFeatures: any[]
+    contentTemp: string = "";
 
     get f(): { [key: string]: AbstractControl } {
         return this.myForm.controls;
@@ -128,7 +131,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                         Validators.maxLength(255)]],
             content: ['', 
                         [Validators.required, 
-                        Validators.maxLength(4000)]]
+                        Validators.maxLength(40000000000)]]
 
            
         });
@@ -200,9 +203,9 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         });
     }
 
-    whenUpdloadMedia(event: any) {
-        
-        this.tempImages.push(event);
+    whenUploadMedia(event: any) {
+       
+       
     }
 
     uploadFile(id: string, file: File): Observable<any> {
@@ -235,6 +238,79 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         }
     }
 
+    replaceBase64WithPlaceholders(content: string): { updatedContent: string; placeholders: { placeholder: string; base64: string }[] } {
+        const base64Regex = /data:image\/[a-zA-Z]+;base64,[^"]+/g;
+        let imageIndex = 1;
+        const placeholders: { placeholder: string; base64: string }[] = [];
+
+        const updatedContent = content.replace(base64Regex, (match) => {
+            const placeholder = `{{image${imageIndex}}}`;
+            placeholders.push({ placeholder, base64: match });
+            imageIndex++;
+            return placeholder;
+        });
+
+        return { updatedContent, placeholders };
+    }
+
+    async uploadBase64Images(articleId: string, placeholders: { placeholder: string; base64: string }[]) {
+        for (const item of placeholders) {
+            try {
+                const response = await this.articleService.uploadBase64File(articleId, item.base64).toPromise();
+                const imageUrl = response['url'];
+
+                // Thay thế placeholder bằng URL thực tế
+                this.updateContentWithUrls(item.placeholder, imageUrl);
+            } catch (error) {
+                console.error('Lỗi khi upload ảnh:', error);
+            }
+        }
+    }
+
+    updateContentWithUrls(content: string, file: File): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+          try {
+            // Chuyển file sang Base64
+            const base64 = await this.fileToBase64(file);
+            const fileName = file.name;
+      
+            // Gửi file Base64 tới server
+            this.uploadBase64File(base64, fileName).subscribe({
+              next: (response) => {
+                if (response.status) {
+                  const url = response.filePath; // URL trả về từ server
+                  // Thay thế placeholder bằng URL
+                  const updatedContent = content.replace('{{image}}', url);
+                  resolve(updatedContent); // Trả về content đã cập nhật
+                } else {
+                  reject('Upload thất bại: ' + response.message);
+                }
+              },
+              error: (error) => {
+                reject('Lỗi khi upload file: ' + error);
+              },
+            });
+          } catch (error) {
+            reject('Lỗi khi chuyển file sang Base64: ' + error);
+          }
+        });
+      }
+
+
+    private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+    }
+      
+    // Hàm upload Base64 (kế thừa từ ArticleService)
+    private uploadBase64File(base64: string, fileName: string) {
+    return this.articleService.uploadBase64File(base64, fileName);
+    }
+
     addArticle(myForm: FormGroup) {
         if (myForm.invalid) {
             this.getErrorForm();
@@ -243,6 +319,11 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     
         const bodyData = this.myForm.value;
         bodyData.status = 1;
+
+        const { updatedContent, placeholders } = this.replaceBase64WithPlaceholders(bodyData.content);
+        bodyData.content = updatedContent;
+
+
         this.spinnerService.show();
 
        
@@ -254,15 +335,6 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                     this.spinnerService.hide();
                     this.toastr.success(res.message, TOASTR_TITLE.SUCCESS);
 
-                    // // Upload ảnh trong content
-                    // const uploadPromises = this.tempImages.map((image) => {
-                    //     const formData = new FormData();
-                    //     formData.append('file', image.file);
-                
-                    //     // Gọi API upload ảnh
-                    //     return this.articleService.uploadImage(formData).toPromise();
-                    // });
-    
                     // Kiểm tra nếu có file được chọn thì tiến hành upload
                     if (this.selectedFile) {
                         this.uploadFile(res.data.id, this.selectedFile).subscribe({
@@ -274,7 +346,10 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                             },
                         });
                     }
-    
+                    
+                    await this.uploadBase64Images(res.data.id, placeholders);
+
+
                     this.cancel(); // Điều hướng sau khi hoàn tất
                 } else {
                     this.toastr.error(res.message, TOASTR_TITLE.ERROR);
