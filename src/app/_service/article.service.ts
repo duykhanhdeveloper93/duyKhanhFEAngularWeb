@@ -55,6 +55,12 @@ export class ArticleService {
         return this.http.post(URL + 'search', options, httpOptions);
     }
 
+    
+    findById(id: number): Observable<any> {
+        return this.http.get(`${URL}${id}`, httpOptions);
+      
+    }
+
     deleteArticle(id: number): Observable<void> {
         return this.http.delete<void>(`${URL}/${id}`);
     }

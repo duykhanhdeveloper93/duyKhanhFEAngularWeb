@@ -200,6 +200,7 @@ import { CreateUserComponent } from './settings/manage-user/create_user/create-u
 import { CreateArticleComponent } from './settings/manage-article/create_article/create-article.component';
 import { ListArticleComponent } from './settings/manage-article/list-article/list-article.component';
 import { EditArticleComponent } from './settings/manage-article/edit-article/edit-article.component';
+import { ViewArtileComponent } from './settings/manage-article/view-article/view-article.component';
 
 export const routes: Routes = [
 
@@ -219,6 +220,7 @@ export const routes: Routes = [
     {path: 'contacts', component: ContactsComponent},
     {path: 'my-profile', component: MyProfileComponent},
     {path: 'to-do-list', component: ToDoListComponent},
+    
     {
         path: 'settings',
         component: SettingsComponent,
@@ -231,7 +233,8 @@ export const routes: Routes = [
             {path: 'manage-user', component: ListUserComponent},
             {path: 'manage-article/add', component: CreateArticleComponent},
             {path: 'manage-article/edit', component: EditArticleComponent},
-            {path: 'manage-article', component: ListArticleComponent}
+            {path: 'manage-article', component: ListArticleComponent},
+            {path: 'manage-article/view-content-article/:id', component: ViewArtileComponent},
         ]
     },
     

@@ -1,0 +1,17 @@
+.custom-table {
+    .mat-mdc-header-cell {
+        color: #260944 !important;
+    }
+    .mat-mdc-cell {
+        font-size: var(--fontSize) !important;
+        color: var(--secondaryTxtColor) !important;
+    }
+    .btn-table-action {
+        width: 40px !important;
+        height: 40px !important;
+        svg {
+            width: 18px !important;
+            height: 18px !important;
+        }
+    }
+}

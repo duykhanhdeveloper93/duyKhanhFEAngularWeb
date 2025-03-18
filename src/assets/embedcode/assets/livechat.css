@@ -1,0 +1,516 @@
+/* open-sans-regular - latin_latin-ext_vietnamese */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "var(--fontFamily)";
+    font-style: normal;
+    font-weight: 400;
+    src: url("fonts/open-sans-v35-latin_latin-ext_vietnamese-regular.woff2")
+        format("woff2");
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* open-sans-500 - latin_latin-ext_vietnamese */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "var(--fontFamily)";
+    font-style: normal;
+    font-weight: 500;
+    src: url("fonts/open-sans-v35-latin_latin-ext_vietnamese-500.woff2")
+        format("woff2");
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* open-sans-700 - latin_latin-ext_vietnamese */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "var(--fontFamily)";
+    font-style: normal;
+    font-weight: 700;
+    src: url("fonts/open-sans-v35-latin_latin-ext_vietnamese-700.woff2")
+        format("woff2");
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* region vscc-popup-position  */
+
+/* vscc-popup-position-top-left */
+.vscc-popup-button-top-left {
+    position: fixed;
+    top: 20px;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.vscc-popup-window-top-left {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+}
+
+.vscc-greeting-top-left {
+    position: fixed;
+    top: -6px;
+    left: 70px;
+}
+/* vscc-popup-position-top-right */
+.vscc-popup-button-top-right {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.vscc-popup-window-top-right {
+    position: fixed;
+    top: 25px !important;
+}
+
+.vscc-greeting-top-right {
+    position: fixed;
+    top: -6px;
+    right: 70px;
+}
+/* vscc-popup-position-bottom-right */
+.vscc-popup-button-bottom-right {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.vscc-popup-window-bottom-right {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+}
+
+.vscc-greeting-bottom-right {
+    position: fixed;
+    bottom: -6px;
+    right: 70px;
+}
+
+/* vscc-popup-position-bottom-left */
+.vscc-popup-button-bottom-left {
+    position: fixed;
+    bottom: 20px;
+    left: 30px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.vscc-popup-window-bottom-left {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+}
+
+.vscc-greeting-bottom-left {
+    position: fixed;
+    bottom: -6px;
+    left: 70px;
+}
+
+/* endregion vscc-popup-position  */
+
+.vscc-popup-button {
+    position: fixed;
+    z-index: 9999;
+    align-items: center;
+    display: flex;
+}
+
+.vscc-popup-button button {
+    width: 52px;
+    height: 52px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    opacity: 0.85;
+    transition: opacity 0.5s;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vscc-popup-button:hover button {
+    opacity: 1;
+}
+
+.vscc-popup-button-channel {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(1);
+}
+
+.vscc-popup-button.opened .vscc-popup-button-channel {
+    visibility: visible;
+    opacity: 0;
+    animation: expandIn 0.75s ease-out forwards;
+}
+
+.vscc-popup-button .close-btn {
+    animation: pulse-blue 2s infinite;
+    transform: scale(1);
+    animation: none;
+    transform: none;
+    animation: smoothAnimation 0.3s ease-in-out; /* Thêm hiệu ứng animation */
+    transform: scale(1) rotate(0deg); /* Đảm bảo ban đầu không có thay đổi nào */
+}
+
+.vscc-popup-button {
+    position: fixed;
+    z-index: 9999;
+    align-items: center;
+    display: flex;
+    &:hover {
+        .vscc-greeting {
+            visibility: visible;
+            opacity: 1;
+            animation: smoothAnimation 1s ease-in-out;
+        }
+    }
+}
+
+.vscc-popup-button.opened .close-btn {
+    background: #00b0ed url(icon_chat_closed.png);
+    background-size: 32%;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: rotateIcon 0.3s ease-out forwards;
+    opacity: 1;
+}
+
+/* Animation xoay icon */
+@keyframes rotateIcon {
+    0% {
+        transform: rotate(0deg); /* Bắt đầu với góc xoay = 0 độ */
+    }
+    100% {
+        transform: rotate(
+            90deg
+        ); /* Kết thúc với góc xoay = 360 độ (xoay 1 vòng đầy đủ) */
+    }
+}
+
+.vscc-popup-button.opened div.vscc-greeting {
+    visibility: hidden;
+}
+
+/* close-button */
+.vscc-popup-button.opened .close-btn svg {
+    display: none;
+    background-color: #a5a3a9 !important;
+}
+
+.vscc-popup-button.opened .close-btn {
+    background-color: #a5a3a9 !important;
+    box-shadow: none !important;
+}
+
+/* width */
+.vscc-popup-window ::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.vscc-popup-window ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.vscc-popup-window ::-webkit-scrollbar-thumb {
+    background: #00b0ed1c;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+.vscc-popup-window ::-webkit-scrollbar-thumb:hover {
+    background: #00b0ed;
+    border-radius: 10px;
+}
+
+.vscc-popup-window {
+    width: 390px;
+    position: fixed;
+    right: 30px;
+    /* bottom: 85px; */
+    box-shadow: 0px 4px 4px 0px #00000040;
+    border-radius: 18px;
+    overflow: hidden;
+    background: white;
+    z-index: 10000;
+}
+
+.vscc-popup-window .vscc-popup-header {
+    position: relative;
+    padding: 25px 20px 40px;
+    color: white;
+    display: flex;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-close-btn {
+    background-color: transparent;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-close-btn button {
+    background-color: transparent;
+    outline: none;
+    border: none;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-close-btn button:hover {
+    cursor: pointer;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-logo {
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    left: 20px;
+    top: 15px;
+    border-radius: 5px;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-title {
+    font-family: Roboto, sans-serif;
+    text-align: center;
+    width: calc(100% - 110px);
+    padding-left: 85px;
+    margin-bottom: 30px;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-title h2 {
+    font-size: 32px;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-title h3 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-title h4 {
+    font-size: 13px;
+}
+
+.vscc-popup-window .vscc-popup-header .vscc-title h2,
+.vscc-popup-window .vscc-popup-header .vscc-title h4 {
+    margin: 0;
+}
+
+.vscc-popup-window .vscc-popup-body {
+    margin-top: -20px;
+    position: relative;
+    background-color: #efeeee;
+}
+
+.vscc-popup-window .vscc-popup-body .vscc-popup-body-wrapper {
+    height: 370px;
+    width: 94%;
+    margin: 0 auto;
+    border-radius: 18px;
+    padding-top: 20px;
+}
+
+.vscc-popup-window
+    .vscc-popup-body
+    .vscc-popup-body-wrapper
+    .vscc-popup-body-content {
+    overflow: hidden;
+    height: calc(100% + 25px);
+    padding: 0;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-radius: 24px 24px 18px 18px;
+}
+
+.vscc-greeting {
+    visibility: hidden;
+    position: absolute;
+    line-height: 20px;
+    border: 2px #00aeef solid;
+    border-radius: 10px;
+    padding: 8px 15px;
+    z-index: 9999;
+    width: 240px;
+    background: white;
+    box-shadow: 1px 1px 3px grey;
+}
+
+.vscc-greeting h5 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.vscc-greeting p {
+    margin: 0;
+}
+
+.vscc-greeting .vscc-greeting-triangle {
+    bottom: 25px;
+    right: -6px;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    position: absolute;
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-right: 2px solid #2fc7f7;
+    border-bottom: 2px solid #2fc7f7;
+}
+
+@media (max-width: 500px) {
+    .vscc-popup-window {
+        width: 100%;
+        right: 0;
+    }
+
+    .vscc-popup-window .vscc-popup-header .vscc-icon {
+        width: 70px;
+        height: 70px;
+    }
+
+    .vscc-popup-window .vscc-popup-header .vscc-title h2 {
+        font-size: 24px;
+    }
+
+    .vscc-popup-window .vscc-popup-header .vscc-title h4 {
+        font-size: 12px;
+    }
+}
+
+/* mobile */
+@media only screen and (max-width: 767px) {
+    .vscc-popup-window {
+        height: 100%;
+        bottom: 0px;
+        top: 0px !important;
+    }
+
+    .vscc-popup-button-bottom-right {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .vscc-popup-window .vscc-popup-body {
+        /* 47px: height của footer */
+        height: calc(85% - 47px);
+    }
+
+    .vscc-popup-window .vscc-popup-body .vscc-popup-body-wrapper {
+        height: 100%;
+    }
+
+    .vscc-popup-window
+        .vscc-popup-body
+        .vscc-popup-body-wrapper
+        .vscc-popup-body-content {
+        height: calc(100% + 40px);
+    }
+
+    .vscc-popup-window .vscc-popup-header {
+        height: 15%;
+    }
+
+    .vscc-popup-window .vscc-popup-header .vscc-title h2 {
+        font-size: 24px;
+    }
+
+    .vscc-popup-window .vscc-popup-header .vscc-title h4 {
+        font-size: 12px;
+    }
+}
+
+/* tablet */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .vscc-popup-button-bottom-right {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .vscc-popup-window .vscc-popup-body .vscc-popup-body-wrapper {
+        height: 40vh;
+    }
+}
+
+@keyframes pulse-blue {
+    0% {
+        box-shadow: 0 0 0 0 rgb(226 226 227 / 70%);
+        transform: scale(0.95);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(2, 143, 227, 0);
+        transform: scale(1);
+    }
+
+    to {
+        box-shadow: 0 0 0 0 rgba(2, 143, 227, 0);
+        transform: scale(0.95);
+    }
+}
+
+@keyframes pulse-blue-channel {
+    0% {
+        box-shadow: 0 0 0 0 rgb(226 226 227 / 70%);
+        transform: scale(1);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(2, 143, 227, 0);
+        transform: scale(1);
+    }
+
+    to {
+        box-shadow: 0 0 0 0 rgba(2, 143, 227, 0);
+        transform: scale(1);
+    }
+}
+
+@keyframes expandIn {
+    0% {
+        opacity: 0.85;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes smoothAnimation {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) rotate(0deg);
+    }
+    50% {
+        opacity: 0.75;
+        transform: scale(1.05) rotate(0deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}

@@ -1,7 +1,7 @@
 
 <mat-card class="mb-15 mt-m13 tagus-card">
-    <mat-card-header class="mb-15">
-        <div class="d-flex justify-content-center">
+    <mat-card-header class="mb-15 mt-15 ml-15">
+        <div class="d-flex justify-content-right">
             <v-button
                 
                 class="me-10"
@@ -14,75 +14,112 @@
         </div>
     </mat-card-header>
     <mat-card-content>
-        <div class="mt-15 no-shadow">
-            <v-table
-                [data]="listData"
-                [displayedColumns]="displayedColumns"
-                (tableChange)="onTableChange($event)"
-                [pageSize]="pageSize"
-                [pageSizeOptions]="pageSizeOptions"
-                [resetPageIndex]="resetPageIndex"
-            >
-                <ng-container matColumnDef="index">
-                    <th mat-header-cell *matHeaderCellDef class="text-center">
-                        <div
-                            class="d-flex justify-content-center align-items-center"
-                        >
-                            STT
-                        </div>
-                    </th>
-                    <td mat-cell *matCellDef="let element" class="text-start">
-                        {{ element.index }}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="title">
-                    <th
-                        mat-header-cell
-                        *matHeaderCellDef
-                        class="text-center"
-                        style="width: 40%"
-                    >
-                        <div
-                            class="d-flex justify-content-center align-items-center"
-                        >
-                            Tiêu đề báo in
-                        </div>
-                    </th>
-                    <td mat-cell *matCellDef="let element" class="text-start">
-                        {{ element.title }}
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                    <th
-                        mat-header-cell
-                        *matHeaderCellDef
-                        class="bold text-center"
-                        style="width: 230px"
-                    >
-                        Thao tác
-                    </th>
-                    <td mat-cell *matCellDef="let element" class="text-center">
-                        <div class="d-flex justify-content-center">
-                          
-                    <v-icon-button
-                        matTooltip="Chỉnh sửa câu hỏi"
-                        (click)="editArticle()"
-                    >
-                        <i class="ri-edit-fill"></i>
-                    </v-icon-button>
-                    <v-icon-button
-
-                        color="warn"
-                        matTooltip="Xóa câu hỏi"
-                        (click)="cancel()"
-                    >
-                        <i class="ri-delete-bin-line"></i>
-                    </v-icon-button>
+      <div >
+          <table
+              mat-table
+              [dataSource]="dataSource"
+              id="tableListUser"
+              matSort
+              (matSortChange)="announceSortChange($event)"
+          >
+              <ng-container matColumnDef="select">
+                  <th
+                      class="td-box-select w-90px"
+                      mat-header-cell
+                      *matHeaderCellDef
+                      matSort
+                  >
+                      <div>
+                          <mat-checkbox *ngIf="listData.length > 0 && canDelete()"
+                              (change)="$event ? toggleAllRows() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()"
+                              [aria-label]="checkboxLabel()"
+                          >
+                          </mat-checkbox>
                       </div>
-                    </td>
-                </ng-container>
-            </v-table>
-        </div>
-    </mat-card-content>
+                      <div *ngIf="show_button_delete === true && canDelete()
+                            "style="margin-top: -30px; float: right">
+                          <button (click)="deleteMultiData()" class="bg-transparent" style=" background: aliceblue;  border: none;  cursor: pointer;">
+                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                      d="M11.875 3.16667H15.8333V4.75H14.25V15.0417C14.25 15.4789 13.8956 15.8333 13.4583 15.8333H2.375C1.93778 15.8333 1.58333 15.4789 1.58333 15.0417V4.75H0V3.16667H3.95833V0.791667C3.95833 0.354445 4.31278 0 4.75 0H11.0833C11.5206 0 11.875 0.354445 11.875 0.791667V3.16667ZM12.6667 4.75H3.16667V14.25H12.6667V4.75ZM5.54167 7.125H7.125V11.875H5.54167V7.125ZM8.70833 7.125H10.2917V11.875H8.70833V7.125ZM5.54167 1.58333V3.16667H10.2917V1.58333H5.54167Z"
+                                      fill="#5B5B98"/>
+                              </svg>
+                          </button>
+                      </div>
+                  </th>
+                  <td
+                      mat-cell
+                      *matCellDef="let row"
+                      style="text-align: center"
+                  >
+                      <div>
+                          <mat-checkbox
+                              (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)"
+                              [aria-label]="checkboxLabel(row)"
+                              #checkboxChild
+                          ></mat-checkbox>
+                      </div>
+                  </td>
+              </ng-container>
+
+              <!-- STT -->
+              <ng-container matColumnDef="stt">
+                  <th mat-header-cell *matHeaderCellDef style="width: 5%">
+                      STT
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                      <span class="txt-content">{{ element.stt }}</span>
+                  </td>
+              </ng-container>
+
+              <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef class="txt-center" style="width: 65%">
+                      Tiêu đề
+                  </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: left" class="txt-content">
+                      <span class="txt-content">{{
+                          element.title
+                      }}</span>
+                  </td>
+              </ng-container>
+
+
+              <!-- Checkbox Column -->
+              <ng-container matColumnDef="action" style="width: 5%">
+                  <th mat-header-cell *matHeaderCellDef class="txt-center">
+                      Thao tác
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                      <div class="d-flex justify-content-center">
+                          
+                      </div>
+                  </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell"  [attr.colspan]="displayedColumns.length" >
+                      <div class="v-table-empty">Không có dữ liệu</div>
+                  </td>
+              </tr>
+          </table>
+          <mat-paginator
+              *ngIf="total"
+              [pageSize]="pageSize"
+              [pageIndex]="pageIndex"
+              [length]="total"
+              (page)="onChangePaginator($event)"
+              [pageSizeOptions]="pageSizeOptions"
+              showPreviousAndNextButtons
+              showFirstLastButtons
+              
+              class="show-arrow"
+          >
+          </mat-paginator>
+      </div>
+  </mat-card-content>
 </mat-card>

@@ -68,7 +68,7 @@ export class VContentEditorComponent
     @Input() control: FormControl;
     @Input() displayType: 'row' | 'column' = 'column';
 
-    @Output() uploadFileFromQuill: EventEmitter<{ file: File; tempImageUrl: string }> = new EventEmitter<{ file: File; tempImageUrl: string }>();
+    @Output() uploadFileFromQuill: EventEmitter<{ file: File; base64Value: string }> = new EventEmitter<{ file: File; base64Value: string }>();
 
        
     quill!: any;
@@ -129,9 +129,30 @@ export class VContentEditorComponent
     
                 reader.onload = () => {
                     const range = this.quill.getSelection(); // Lấy vị trí con trỏ
+
+                    const timestamp = new Date().getTime(); // Lấy thời gian hiện tại
+
+                    // Tách tên file và phần mở rộng
+                    const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, ""); // Lấy tên file không có phần mở rộng
+                    const fileExtension = file.name.split('.').pop(); // Lấy phần mở rộng
+
+                    // Thay thế ký tự tiếng Việt bằng ký tự không dấu
+                    const sanitizedFileName = fileNameWithoutExt
+                        .normalize("NFD") // Chuyển đổi sang dạng chuẩn
+                        .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+                        .replace(/[^a-zA-Z0-9 ]/g, "_") // Thay thế ký tự không phải chữ cái và số bằng dấu gạch dưới
+                        .replace(/\s+/g, "_") // Thay thế khoảng trắng bằng dấu gạch dưới
+                        .trim(); // Xóa khoảng trắng ở đầu và cuối
+
+                    // Tạo tên file mới với timestamp ở đầu
+                    const newFileName = `${timestamp}_${sanitizedFileName}.${fileExtension}`; // Thêm timestamp và phần mở rộng vào tên file
+
+                    // Tạo một đối tượng file mới với tên đã sửa đổi
+                    const newFile = new File([file], newFileName, { type: file.type });
+
                     this.quill.insertEmbed(range?.index || 0, 'image', reader.result);
-                    const tempImageUrl = reader.result as string;
-                    this.uploadFileFromQuill.emit({ file, tempImageUrl});
+                    const base64Value  = reader.result as string;
+                    this.uploadFileFromQuill.emit({ file:newFile, base64Value });
 
                     // Cập nhật giá trị của FormControl sau khi ảnh được thêm
                     const editorContent = this.quill.root.innerHTML;

@@ -1,0 +1,22 @@
+<form [formGroup]="myForm" >
+    <mat-card class="tagus-card" >
+        <mat-card-content>
+            <div class="row mr-10 ml-10">
+
+
+                <div [innerHTML]="contentTemp"></div> <!-- Hiển thị nội dung HTML -->
+               
+
+                
+            </div>
+        </mat-card-content>
+
+        <div class="d-flex justify-content-end mt-20">
+          
+            <v-button class="mr-10 mb-10" (clickEvent)="cancel()">
+                <i class="ri-close-line"></i>Thoát
+            </v-button>
+        </div>
+    </mat-card>
+
+</form>

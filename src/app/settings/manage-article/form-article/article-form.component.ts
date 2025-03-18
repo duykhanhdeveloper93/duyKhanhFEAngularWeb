@@ -103,7 +103,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
 
     selectedFile: File | null = null;
 
-    tempImages: { file: File; tempImageUrl: string }[] = [];// Biến lưu tạm cái media được upload vào quill
+    tempImages: { file: File; base64Value: string }[] = [];// Biến lưu tạm cái media được upload vào quill
 
     mapMedia: { [key: string]: string } = {};
 
@@ -131,7 +131,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                         Validators.maxLength(255)]],
             content: ['', 
                         [Validators.required, 
-                        Validators.maxLength(40000000000)]]
+                        Validators.maxLength(4000)]]
 
            
         });
@@ -203,9 +203,10 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         });
     }
 
-    whenUploadMedia(event: any) {
-       
-       
+    whenUploadMedia(transferEvent: any) {
+        
+      
+        this.tempImages.push(transferEvent);
     }
 
     uploadFile(id: string, file: File): Observable<any> {
@@ -238,34 +239,20 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         }
     }
 
-    replaceBase64WithPlaceholders(content: string): { updatedContent: string; placeholders: { placeholder: string; base64: string }[] } {
-        const base64Regex = /data:image\/[a-zA-Z]+;base64,[^"]+/g;
-        let imageIndex = 1;
-        const placeholders: { placeholder: string; base64: string }[] = [];
+    replaceBase64WithPlaceholders(content: string): string {
 
-        const updatedContent = content.replace(base64Regex, (match) => {
-            const placeholder = `{{image${imageIndex}}}`;
-            placeholders.push({ placeholder, base64: match });
-            imageIndex++;
-            return placeholder;
-        });
 
-        return { updatedContent, placeholders };
-    }
-
-    async uploadBase64Images(articleId: string, placeholders: { placeholder: string; base64: string }[]) {
-        for (const item of placeholders) {
-            try {
-                const response = await this.articleService.uploadBase64File(articleId, item.base64).toPromise();
-                const imageUrl = response['url'];
-
-                // Thay thế placeholder bằng URL thực tế
-                this.updateContentWithUrls(item.placeholder, imageUrl);
-            } catch (error) {
-                console.error('Lỗi khi upload ảnh:', error);
-            }
+        for (let index = 0; index < this.tempImages.length; index++) {
+            let element1 : { file: File; base64Value: string } = this.tempImages[index];
+            content = content.replace(element1.base64Value, element1.file.name );
+            
         }
+
+        
+        return content;
     }
+
+
 
     updateContentWithUrls(content: string, file: File): Promise<string> {
         return new Promise(async (resolve, reject) => {
@@ -298,12 +285,12 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
 
 
     private fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-    });
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+        });
     }
       
     // Hàm upload Base64 (kế thừa từ ArticleService)
@@ -320,7 +307,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         const bodyData = this.myForm.value;
         bodyData.status = 1;
 
-        const { updatedContent, placeholders } = this.replaceBase64WithPlaceholders(bodyData.content);
+        const updatedContent= this.replaceBase64WithPlaceholders(bodyData.content);
         bodyData.content = updatedContent;
 
 
@@ -347,7 +334,13 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                         });
                     }
                     
-                    await this.uploadBase64Images(res.data.id, placeholders);
+                    
+                    const uploadPromises = this.tempImages.map(async (element1) => {
+                        return await this.articleService.uploadBase64File(element1.base64Value, element1.file.name).toPromise();
+                    });
+                    
+                    // Chờ cho tất cả các Promise hoàn thành
+                    await Promise.all(uploadPromises);
 
 
                     this.cancel(); // Điều hướng sau khi hoàn tất
