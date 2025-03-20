@@ -170,7 +170,6 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
   updateButtonDelete() {
     this.show_button_delete = this.selection.selected.length >= 2 ? true : false;
     this.dataSource.data = [...this.dataSource.data]; // Tạo một bản sao mới để Angular phát hiện 
-    console.log('Selected rows:', this.selection.selected.length);
   }
 
   convertDateToString(data: string): string {

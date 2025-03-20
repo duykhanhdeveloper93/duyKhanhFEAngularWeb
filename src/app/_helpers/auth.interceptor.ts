@@ -77,11 +77,11 @@ export class AuthInterceptor implements HttpInterceptor {
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        console.log("zzzzzzzzzzzz")
+        console.log("auth bảo mật web điều hướng")
         const access_token = this.tokenStorageService.getAccessToken();
         const client_id = this.tokenStorageService.getClientId();
         const refresh_token = this.tokenStorageService.getRefreshToken();
-        console.log("zzzzzzzzzzzz")
+        
         const guest_access_token =
             this.tokenStorageService.getGuestAccessToken();
         const guest = this.tokenStorageService.getGuest();
@@ -118,7 +118,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     } else {
                         if (!this.isOnlineChat()) {
                             this.tokenStorageService.signOut();
-                            this.router.navigate(['/authentication/login']);
+                            this.router.navigate(['/authentication']);
                         }
                     }
                 }
@@ -129,7 +129,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 ) {
                     if (!this.isOnlineChat()) {
                         this.tokenStorageService.signOut();
-                        this.router.navigate(['/authentication/login']);
+                        this.router.navigate(['/authentication']);
                     }
                     return throwError(() => error);
                 }
