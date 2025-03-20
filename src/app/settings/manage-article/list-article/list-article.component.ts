@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -24,7 +24,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { concatMap, debounceTime, Subject, switchMap, toArray } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { ConfirmDialogComponent } from '../../../common/my-template/confirm-dialog/confirm-dialog.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 
 interface Article {
     id: number;
@@ -60,7 +60,7 @@ interface PaginatedResponse {
         MatCheckboxModule
     ],
     templateUrl: './list-article.component.html',
-    styleUrl: './list-article.component.scss',
+    styleUrl: './list-article.component.scss'
 })
 export class ListArticleComponent implements AfterViewInit, OnInit {
   protected readonly pageSizeOptions = pageSizeOptions;
@@ -94,17 +94,7 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
   listRole: any[] = [];
   packageService: any;
 
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-      const numSelected = this.selection.selected.length;
-      const numRows = this.dataSource.data.length;
-      if (this.selection.selected.length > 0) {
-        this.show_button_delete = true;
-      } else {
-          this.show_button_delete = false;
-      }
-      return numSelected === numRows;
-  }
+
   private readonly searchSubject = new Subject<any | undefined>();
   private searchSubscription: Subscription;
 
@@ -117,7 +107,8 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
       private toastr: ToastrService,
       private cdr: ChangeDetectorRef,
       private router: Router,
-      private spinnerService: NgxSpinnerService
+      private spinnerService: NgxSpinnerService,
+  
 
   ) {
       this.paginatorIntl.itemsPerPageLabel = 'Số mục mỗi trang'; // Thay đổi chuỗi "Số mục mỗi trang" thành "Tùy chọn trang"}
@@ -168,12 +159,18 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
           top: 1000,
       };
      
-      this.getListPackages();
+      this.getListArticles();
   }
 
 
   ngOnDestroy() {
       this.searchSubscription.unsubscribe();
+  }
+
+  updateButtonDelete() {
+    this.show_button_delete = this.selection.selected.length >= 2 ? true : false;
+    this.dataSource.data = [...this.dataSource.data]; // Tạo một bản sao mới để Angular phát hiện 
+    console.log('Selected rows:', this.selection.selected.length);
   }
 
   convertDateToString(data: string): string {
@@ -186,7 +183,7 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
       return dateStringOK;
   }
 
-  getListPackages() {
+  getListArticles() {
       if (this.canViewList() === false) return;
 
       this.articleService.getArticle(this.paginateOptions).subscribe({
@@ -234,34 +231,49 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
       this.dataSource.paginator = this.paginator;
   }
 
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    
+    return numSelected === numRows;
+  }
+
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   toggleAllRows() {
       if (this.isAllSelected()) {
-          this.selection.clear();
-          return;
-      }
-      this.selection.select(...this.dataSource.data);
-      if (this.selection.selected.length > 0) {
-        this.show_button_delete = true;
+        this.selection.clear();
       } else {
-          this.show_button_delete = false;
+          this.selection.select(...this.dataSource.data);
       }
+      this.updateButtonDelete();
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: PeriodicElement): string {
+  checkboxLabel(row?: PeriodicElement) {
       this.selectedItems = this.selection.selected;
-      if (this.selectedItems.length > 0) {
-          this.show_button_delete = true;
-      } else {
-          this.show_button_delete = false;
-      }
+      this.updateButtonDelete();
       if (!row) {
           return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
       }
       return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${
           row.stt + 1
       }`;
+  }
+
+  onCheckboxChange(event: MatCheckboxChange, row: any): void {
+    // Kiểm tra trạng thái checkbox
+    const isChecked = event.checked; // Sử dụng thuộc tính checked của MatCheckboxChange
+
+    if (isChecked) {
+        this.selection.select(row); // Chọn hàng
+    } else {
+        this.selection.deselect(row); // Bỏ chọn hàng
+    }
+
+    // Cập nhật nút xóa
+    this.updateButtonDelete();
   }
 
   /** The label for the checkbox on the passed row */
@@ -310,7 +322,7 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
       };
 
       this.paginateOptions = { ...this.paginateOptions, ...paginateOptions };
-      this.getListPackages();
+      this.getListArticles();
   }
   
   // Routing
@@ -318,17 +330,14 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
       this.router.navigate(['/settings/manage-article/add']);
   }
 
-  editNewArticle(elementId: any) {
-      this.router.navigate(['/settings/package/edit/' + elementId]);
+  editArticle(elementId: any) {
+      this.router.navigate(['/settings/manage-article/edit/' + elementId]);
   }
 
-  viewPackage(elementId: any) {
-      this.router.navigate(['/settings/package/view/' + elementId]);
+  viewContent(elementId: any) {
+      this.router.navigate(['/settings/manage-article/view-content-article/' + elementId]);
   }
 
-  addDepartment(elementId: any) {
-      this.router.navigate(['/settings/package/add_dep/' + elementId]);
-  }
 
  
  

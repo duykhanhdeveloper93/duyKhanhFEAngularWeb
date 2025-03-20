@@ -15,7 +15,10 @@
             }"
             (onEditorCreated)="setEditorInstance($event)"
             [formControl]="control"
-            [modules]="modules">
+            [modules]="modules"
+            (focus)="focused = true"
+            (blur)="blurred = true"
+            >
         </quill-editor>
     <mat-hint *ngIf="control && control.errors" class="danger-message"
         >{{ message }}

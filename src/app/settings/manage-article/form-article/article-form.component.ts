@@ -103,7 +103,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
 
     selectedFile: File | null = null;
 
-    tempImages: { file: File; base64Value: string }[] = [];// Biến lưu tạm cái media được upload vào quill
+    tempImages: { fileName: string; base64Value: string }[] = [];// Biến lưu tạm cái media được upload vào quill
 
     mapMedia: { [key: string]: string } = {};
 
@@ -130,8 +130,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                         [Validators.required, 
                         Validators.maxLength(255)]],
             content: ['', 
-                        [Validators.required, 
-                        Validators.maxLength(4000)]]
+                        [Validators.required]]
 
            
         });
@@ -206,7 +205,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     whenUploadMedia(transferEvent: any) {
         
       
-        this.tempImages.push(transferEvent);
+        
     }
 
     uploadFile(id: string, file: File): Observable<any> {
@@ -240,17 +239,36 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     }
 
     replaceBase64WithPlaceholders(content: string): string {
-
-
-        for (let index = 0; index < this.tempImages.length; index++) {
-            let element1 : { file: File; base64Value: string } = this.tempImages[index];
-            content = content.replace(element1.base64Value, element1.file.name );
-            
-        }
-
+        this.tempImages = [];
         
-        return content;
-    }
+        // Tìm tất cả các chuỗi base64 trong chuỗi HTML
+        const base64Regex = /data:\s*image\/\w+;\s*base64,\s*(.*?)\s*"/g;
+        let match;
+        let updatedContent = content;
+      
+        // Lặp qua từng chuỗi base64 và thay thế
+        while ((match = base64Regex.exec(content)) !== null) {
+          const base64Value = match[1];
+      
+          // Tạo tên tệp ngẫu nhiên
+          const timestamp = new Date().getTime();
+          const randomChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+          let fileName = 'image_';
+          for (let i = 0; i < 8; i++) {
+            fileName += randomChars[Math.floor(Math.random() * randomChars.length)];
+          }
+          fileName += `_${timestamp}.png`;
+      
+          // Lưu trữ thông tin về tệp
+          this.tempImages.push({ fileName, base64Value });
+      
+          // Thay thế chuỗi base64 bằng tên tệp mới
+          updatedContent = updatedContent.replace(match[0], `<img src="${fileName}">`);
+        }
+        updatedContent = updatedContent.replace('<img src="<img src=','<img src=')
+        return updatedContent;
+      }
+      
 
 
 
@@ -307,7 +325,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         const bodyData = this.myForm.value;
         bodyData.status = 1;
 
-        const updatedContent= this.replaceBase64WithPlaceholders(bodyData.content);
+        const updatedContent = this.replaceBase64WithPlaceholders(bodyData.content);
         bodyData.content = updatedContent;
 
 
@@ -336,7 +354,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                     
                     
                     const uploadPromises = this.tempImages.map(async (element1) => {
-                        return await this.articleService.uploadBase64File(element1.base64Value, element1.file.name).toPromise();
+                        return await this.articleService.uploadBase64File(element1.base64Value, element1.fileName).toPromise();
                     });
                     
                     // Chờ cho tất cả các Promise hoàn thành

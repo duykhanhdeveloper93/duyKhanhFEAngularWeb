@@ -45,6 +45,8 @@ import { VContentEditorComponent } from '../../../common/my-template/content-edi
 import { saveAs } from 'file-saver'
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
     selector: 'view-article',
@@ -130,16 +132,13 @@ export class ViewArtileComponent implements AfterViewInit, OnInit {
     }
 
 
-   
-
-    
-
     ngOnInit(): void {
         this.id = Number(this.route.snapshot.paramMap.get('id'));
         this.articleService.findById(this.id).subscribe({
             next: (res) => {
                 if (res.status) {
                     this.contentTemp = res.data.content;
+                    this.contentTemp = this.articleService.processImagePaths(this.contentTemp);
                 }
             },
             error: (err) => {
@@ -148,7 +147,6 @@ export class ViewArtileComponent implements AfterViewInit, OnInit {
         });
        
     }
-
 
 
     ngAfterViewInit() {

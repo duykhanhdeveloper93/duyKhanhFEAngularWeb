@@ -70,5 +70,18 @@ export class ArticleService {
     }
 
 
+    processImagePaths(content: string): string {
+        if (!content) return '';
+        
+        const baseUrl = URL + 'image/' ; // Thay thế bằng URL thực tế
+        
+        return content.replace(/<img src="([^"]+)"/g, (match, fileName) => {
+            if (fileName.startsWith('http') || fileName.startsWith('/uploads/')) {
+                return match;
+            }
+            return `<img src="${baseUrl}${fileName}"`;
+        });
+    }
+
    
 }
