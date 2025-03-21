@@ -101,6 +101,9 @@ export class ViewArtileComponent implements AfterViewInit, OnInit {
                     </iframe>
                 </body>
             </html>`;
+    
+    title: string;
+    image_title: string;
 
     get f(): { [key: string]: AbstractControl } {
         return this.myForm.controls;
@@ -139,6 +142,10 @@ export class ViewArtileComponent implements AfterViewInit, OnInit {
                 if (res.status) {
                     this.contentTemp = res.data.content;
                     this.contentTemp = this.articleService.processImagePaths(this.contentTemp);
+                    this.title = res.data.title;
+                    this.image_title = res.data.image_title_path;
+                    this.image_title = '<img src="' +  this.image_title + '" >';
+                    this.image_title = this.articleService.processImagePaths(this.image_title);
                 }
             },
             error: (err) => {

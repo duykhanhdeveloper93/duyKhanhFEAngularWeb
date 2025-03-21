@@ -188,11 +188,12 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
       this.articleService.getArticle(this.paginateOptions).subscribe({
           next: (res) => {
               if (res.status) {
+                const pageOffset = this.paginateOptions.skip ;
                   this.listData = res.data.items.map(
-                      (item: any, stt: number) => {
+                      (item: any, index: number) => {
                           const element: PeriodicElement = {
                             id: item.id,
-                            stt: stt + 1,
+                            stt: pageOffset + index + 1,
                             status: 0,
                             title: item.title,
                             content: item.title
@@ -349,13 +350,30 @@ export class ListArticleComponent implements AfterViewInit, OnInit {
   }
 
   deleteMultiData() {
-      
+      let ids : number[] = []
+      ids = this.selectedItems.map((item: any) => {
+        return item.id;
+      });
+      this.spinnerService.show()
+      this.articleService.deleteMultiArticle({ids:ids}).subscribe({
+        next: (res) => {
+          this.toastr.success('Xóa thành công', 'Thành công');
+          if (this.paginator) { // về page 0
+            this.paginator.pageIndex = 0;
+          }
+          this.show_button_delete = false;
+          this.selectedItems = []
+          this.getListArticles();
+          this.spinnerService.hide()
+        
+        },
+        error: (err) =>{
+          this.spinnerService.hide()
+        }
+      })
   }
 
-  deleteMulti() {
-      
-  }
-
+  
 
 
 

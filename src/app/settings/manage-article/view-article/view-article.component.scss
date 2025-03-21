@@ -120,6 +120,17 @@
     justify-content: center;
     cursor: pointer;
   }
-  
-
+  .content-container {
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: normal;
+    hyphens: manual;
+    word-spacing: normal;
+    text-align: justify;
+    
+    // Thêm thuộc tính này để ngăn ngắt từ
+    -webkit-hyphens: manual;
+    -ms-hyphens: manual;
+    -moz-hyphens: manual;
+  }
   

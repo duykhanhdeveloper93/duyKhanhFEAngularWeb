@@ -1,15 +1,19 @@
-<form [formGroup]="myForm" >
-    <mat-card class="tagus-card" >
-        <mat-card-content>
+<form  >
+    <mat-card  >
+       
             <div class="row mr-10 ml-10">
+                <h1 style="display:flex;justify-content: center;">{{title}}</h1>
+                <div [innerHTML]="image_title" style="display:flex;justify-content: center;"></div> <!-- Hiển thị nội dung HTML -->
+                <div style="max-width: 100%; overflow-x: false;">
+                    <div [innerHTML]="contentTemp" class="content-container"></div>
 
-
-                <div [innerHTML]="contentTemp"></div> <!-- Hiển thị nội dung HTML -->
+                </div>
+               
                
 
                 
             </div>
-        </mat-card-content>
+        
 
         <div class="d-flex justify-content-end mt-20">
           

@@ -344,10 +344,10 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                     if (this.selectedFile) {
                         this.uploadFile(res.data.id, this.selectedFile).subscribe({
                             next: () => {
-                                this.toastr.success('File đã được upload thành công', 'Thành công');
+                               console.log("đẩy ảnh đại diện bài báo thành công")
                             },
                             error: () => {
-                                this.toastr.error('Không thể upload file', 'Lỗi');
+                                console.log("đẩy ảnh đại diện bài báo thất bại")
                             },
                         });
                     }

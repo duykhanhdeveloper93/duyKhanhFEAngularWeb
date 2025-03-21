@@ -65,6 +65,12 @@ export class ArticleService {
         return this.http.delete<void>(`${URL}/${id}`);
     }
 
+    deleteMultiArticle(ids: any): Observable<any> {
+        return this.http.post(URL + 'delete-many', ids, httpOptions);
+    }
+    
+   
+
     createArticle(body: CreateArticleDto): Observable<any> {
         return this.http.post(URL + 'createArticle', body, httpOptions);
     }
