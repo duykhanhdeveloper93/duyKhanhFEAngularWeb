@@ -45,6 +45,7 @@ import { VContentEditorComponent } from '../../../common/my-template/content-edi
 import { saveAs } from 'file-saver'
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
+import { VImageComponent } from '../../../common/my-template/image/v-image.component';
 
 @Component({
     selector: 'article-form',
@@ -67,7 +68,8 @@ import { Observable, tap, catchError, throwError } from 'rxjs';
         RouterLink, RouterOutlet, MatCardModule, MatButtonModule, RouterLinkActive,
         VButtonComponent,
         VContentEditorComponent ,
-        QuillModule
+        QuillModule,
+        VImageComponent
 
         ]
     // encapsulation: ViewEncapsulation.None,
@@ -114,6 +116,9 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
     };
     selectedFeatures: any[]
     contentTemp: string = "";
+    srcImageTitle: string = "images/admin.png";
+    is_show_image_title = false;
+    image_title: string;
 
     get f(): { [key: string]: AbstractControl } {
         return this.myForm.controls;
@@ -165,6 +170,33 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
 
     ngOnInit(): void {
         this.id = Number(this.route.snapshot.paramMap.get('id'));
+        if (this.id && this.id > 0) {
+            this.articleService.findById(this.id).subscribe({
+                next: res => {
+                    if (res.status == true) {
+                        this.dataReturn = res.data;
+
+                        this.myForm.patchValue({
+                            title: this.dataReturn.title,
+                            content:  this.articleService.processImagePaths(this.dataReturn.content),
+                           
+                        });
+
+                        this.image_title = res.data.image_title_path;
+                        if(this.image_title === null || this.image_title === '') {
+                            this.is_show_image_title = false;
+                        } else {
+                            this.is_show_image_title = true;
+                        }
+                       this.image_title = '<img src="' + this.image_title + '" width="100" >';
+                        this.image_title = this.articleService.processImagePaths(this.image_title);
+                    }
+                },
+                error: err => {},
+            });
+        } else {
+           
+        }
        
     }
 
@@ -266,6 +298,7 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
           updatedContent = updatedContent.replace(match[0], `<img src="${fileName}">`);
         }
         updatedContent = updatedContent.replace('<img src="<img src=','<img src=')
+        updatedContent = updatedContent.replace('">>",>','">');
         return updatedContent;
       }
       
@@ -374,6 +407,59 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
         });
     }
 
+   
+
+    editArticle(myForm: FormGroup) {
+        const bodyData = this.myForm.value;
+        const updatedContent = this.replaceBase64WithPlaceholders(bodyData.content);
+        bodyData.content = updatedContent;
+        this.articleService.createArticle(bodyData).subscribe({
+            next: async (res) => {
+                if (res.status === true) {
+                    this.spinnerService.hide();
+                    this.toastr.success(res.message, TOASTR_TITLE.SUCCESS);
+
+                    // Kiểm tra nếu có file được chọn thì tiến hành upload
+                    if (this.selectedFile) {
+                        this.uploadFile(res.data.id, this.selectedFile).subscribe({
+                            next: () => {
+                               console.log("đẩy ảnh đại diện bài báo thành công")
+                            },
+                            error: () => {
+                                console.log("đẩy ảnh đại diện bài báo thất bại")
+                            },
+                        });
+                    }
+                    
+                    
+                    const uploadPromises = this.tempImages.map(async (element1) => {
+                        return await this.articleService.uploadBase64File(element1.base64Value, element1.fileName).toPromise();
+                    });
+                    
+                    // Chờ cho tất cả các Promise hoàn thành
+                    await Promise.all(uploadPromises);
+
+
+                    this.cancel(); // Điều hướng sau khi hoàn tất
+                } else {
+                    this.toastr.error(res.message, TOASTR_TITLE.ERROR);
+                    this.spinnerService.hide();
+                }
+            },
+            error: (err) => {
+                this.toastr.error('Lỗi khi tạo bài viết', 'Thông báo lỗi');
+                this.spinnerService.hide();
+            },
+        });
+    }
+
+    
+    cancel() {
+        this.router.navigate(['/settings/manage-article']);
+    }
+
+
+
     getErrorForm() {
         if (this.myForm.invalid) {
             let textRequired: string = '';
@@ -439,15 +525,6 @@ export class ArticleFormComponent implements AfterViewInit, OnInit {
                 );
             }
         }
-    }
-
-    editArticle(myForm: FormGroup) {
-       
-    }
-
-    
-    cancel() {
-        this.router.navigate(['/settings/manage-article']);
     }
 
 }

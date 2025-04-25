@@ -3,7 +3,7 @@
        
             <div class="row mr-10 ml-10">
                 <h1 style="display:flex;justify-content: center;">{{title}}</h1>
-                <div [innerHTML]="image_title" style="display:flex;justify-content: center;"></div> <!-- Hiển thị nội dung HTML -->
+                <div  *ngIf="is_show_image_title" [innerHTML]="image_title" style="display:flex;justify-content: center;"></div> <!-- Hiển thị nội dung HTML -->
                 <div style="max-width: 100%; overflow-x: false;">
                     <div [innerHTML]="contentTemp" class="content-container"></div>
 

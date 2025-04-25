@@ -24,7 +24,8 @@
                                 <input type="file" (change)="onFileSelected($event)" />
                             </div>
                             <div>
-                                <img src="images/admin.png" class="rounded-circle" width="60" alt="user-image">
+                                <div  *ngIf="is_show_image_title" [innerHTML]="image_title" style="display:flex;justify-content: center;"></div> <!-- Hiển thị nội dung HTML -->
+                            
                             </div>
                             
                         </div>

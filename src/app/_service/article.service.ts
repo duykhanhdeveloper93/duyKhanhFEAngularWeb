@@ -16,7 +16,12 @@ export class CreateArticleDto {
     content:string;
     
   }
-
+  export class UpdateArticleDto {
+    id: number;
+    title: string;
+    content:string;
+    
+  }
 
 @Injectable({
     providedIn: 'root',
@@ -69,11 +74,15 @@ export class ArticleService {
         return this.http.post(URL + 'delete-many', ids, httpOptions);
     }
     
-   
 
     createArticle(body: CreateArticleDto): Observable<any> {
         return this.http.post(URL + 'createArticle', body, httpOptions);
     }
+
+    updateArticle(body: UpdateArticleDto): Observable<any> {
+        return this.http.post(URL + 'updateArticle', body, httpOptions);
+    }
+
 
 
     processImagePaths(content: string): string {
@@ -88,6 +97,15 @@ export class ArticleService {
             return `<img src="${baseUrl}${fileName}"`;
         });
     }
+
+    processImageTitle(fileName: string): string {
+     
+        const baseUrl = URL + 'image/' ; // Thay thế bằng URL thực tế
+        const srcShow = baseUrl + fileName;
+        return srcShow;
+
+    }
+
 
    
 }

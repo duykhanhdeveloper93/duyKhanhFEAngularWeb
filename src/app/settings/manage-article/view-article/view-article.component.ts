@@ -91,7 +91,7 @@ export class ViewArtileComponent implements AfterViewInit, OnInit {
     currentArticle: any;
     content: string;
 
-
+    is_show_image_title = false;
    
     selectedFeatures: any[]                  
     contentTemp: string = `<!DOCTYPE html>
@@ -144,6 +144,11 @@ export class ViewArtileComponent implements AfterViewInit, OnInit {
                     this.contentTemp = this.articleService.processImagePaths(this.contentTemp);
                     this.title = res.data.title;
                     this.image_title = res.data.image_title_path;
+                    if(this.image_title === null || this.image_title === '') {
+                        this.is_show_image_title = false;
+                    } else {
+                        this.is_show_image_title = true;
+                    }
                     this.image_title = '<img src="' +  this.image_title + '" >';
                     this.image_title = this.articleService.processImagePaths(this.image_title);
                 }

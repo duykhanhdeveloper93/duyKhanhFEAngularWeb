@@ -1,0 +1,29 @@
+# Sử dụng image Node.js làm base
+FROM node:20.15.1 as build
+
+# Tạo thư mục làm việc
+WORKDIR /app
+
+# Sao chép package.json và yarn.lock
+COPY package*.json yarn.lock ./
+
+# Cài đặt dependencies bằng Yarn
+RUN yarn install
+
+# Sao chép toàn bộ mã nguồn
+COPY . .
+
+# Build ứng dụng Angular
+RUN yarn run build -- --output-path=./dist
+
+# Sử dụng nginx để phục vụ ứng dụng
+FROM nginx:1.19.0-alpine
+
+# Sao chép build output từ giai đoạn trước
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Expose cổng 80 để truy cập ứng dụng
+EXPOSE 80
+
+# Khởi chạy nginx
+CMD ["nginx", "-g", "daemon off;"]

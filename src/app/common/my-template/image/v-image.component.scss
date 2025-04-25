@@ -1,0 +1,31 @@
+.v-customize-image {
+    display: flex;
+    
+    &.image-row {
+        flex-direction: row;
+        align-items: center;
+        
+        .lbl {
+            margin-right: 10px;
+        }
+    }
+    
+    &.image-column {
+        flex-direction: column;
+    }
+    
+    .img-container {
+        &.disabled-image {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    }
+    
+    .lbl {
+        margin-bottom: 5px;
+    }
+    
+    .text-red {
+        color: red;
+    }
+}

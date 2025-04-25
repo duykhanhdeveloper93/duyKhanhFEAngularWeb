@@ -232,7 +232,7 @@ export const routes: Routes = [
             {path: 'manage-user/add', component: CreateUserComponent},
             {path: 'manage-user', component: ListUserComponent},
             {path: 'manage-article/add', component: CreateArticleComponent},
-            {path: 'manage-article/edit', component: EditArticleComponent},
+            {path: 'manage-article/edit/:id', component: EditArticleComponent},
             {path: 'manage-article', component: ListArticleComponent},
             {path: 'manage-article/view-content-article/:id', component: ViewArtileComponent},
         ]

@@ -1,0 +1,14 @@
+<div class="v-customize-image" [ngClass]="getDisplayType()">
+    <label *ngIf="label" class="d-block fw-semibold gray-color lbl">
+        {{ label }}
+        <span *ngIf="required" class="ml-5 text-red">*</span>
+    </label>
+    <div class="img-container" [ngClass]="{ 'disabled-image': disabled }">
+        <img 
+            [src]="imageSrc" 
+            [alt]="alt" 
+            [width]="width" 
+            [height]="height" 
+            [class]="class">
+    </div>
+</div>
